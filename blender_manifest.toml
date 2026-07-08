@@ -1,0 +1,48 @@
+schema_version = "1.0.0"
+
+id = "cascadeur_bridge"
+version = "1.1.1"
+name = "Cascadeur Bridge"
+tagline = "Helps you to integrate Cascadeur to your workflow with Belnder"
+maintainer = "Aron Nemeth <aron.nemeth95@gmail.com>"
+type = "add-on"
+
+# # Optional: link to documentation, support, source files, etc
+# website = "https://extensions.blender.org/add-ons/my-example-package/"
+
+# # Optional: tag list defined by Blender and server, see:
+# # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
+tags = ["Import-Export", "Pipeline", "Animation"]
+
+blender_version_min = "4.4.0"
+# # Optional: Blender version that the extension does not support, earlier versions are supported.
+# # This can be omitted and defined later on the extensions platform if an issue is found.
+# blender_version_max = "5.1.0"
+
+# License conforming to https://spdx.org/licenses/ (use "SPDX: prefix)
+# https://docs.blender.org/manual/en/dev/advanced/extensions/licenses.html
+license = [
+  "SPDX:GPL-3.0-or-later",
+]
+
+
+# # Optional: list of supported platforms. If omitted, the extension will be available in all operating systems.
+platforms = ["windows-x64", "linux-x64"]
+
+
+[permissions]
+network = "Communicate with Cascadeur through a localhost socket"
+files = "Import/export FBX from/to disk"
+
+# # Optional: advanced build settings.
+# # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build
+[build]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/.github/",
+  "/.git/",
+  "/*.zip",
+  "/.vscode/",
+  "/.venv/",
+  "/.gitignore",
+]
