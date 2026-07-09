@@ -70,24 +70,6 @@ def export_fbx(file_path: str) -> None:
     )
 
 
-def get_actions_from_armatures(selected_objects: list) -> list:
-    """
-    Get the actions from all of the selected objects in Blender.
-
-    :param list selected_objects: List of selected objects
-    :return list: List of obj.animation_data.action objects
-    """
-    actions = []
-    for obj in selected_objects:
-        if hasattr(obj.animation_data, "action"):
-            action = obj.animation_data.action
-            if obj.type == "ARMATURE":
-                actions.append(action)
-            else:
-                bpy.data.actions.remove(action)
-    return actions
-
-
 def delete_objects(objects: list) -> None:
     """
     Delete the provided list of objects.
@@ -109,25 +91,90 @@ def delete_objects(objects: list) -> None:
     bpy.ops.wm.redraw_timer(type="DRAW_WIN_SWAP", iterations=1)
 
 
+def get_imported_actions(selected_objects: list) -> list:
+    """
+    Get the action/action-slot pairs from all selected armatures.
+
+    Non-armature objects may receive temporary actions during FBX import.
+    Those actions are removed.
+
+    :param list selected_objects: List of selected objects.
+    :return list: List of (action, action_slot) tuples.
+    """
+    imported_actions = []
+
+    for obj in selected_objects:
+        if hasattr(obj.animation_data, "action"):
+            action = obj.animation_data.action
+            action_slot = obj.animation_data.action_slot
+
+            if obj.type == "ARMATURE":
+                imported_actions.append(
+                    {
+                        "action": action,
+                        "armature_name": obj.name,
+                        "action_slot": action_slot,
+                    }
+                )
+            else:
+                bpy.data.actions.remove(action)
+
+    return imported_actions
+
+
 def apply_action(
-    armature: bpy.types.Armature,
-    action: bpy.types.Action,
+    armatures: list[bpy.types.Armature],
+    actions_data: list[dict],
     action_name: str = "cascadeur_action",
 ) -> None:
     """
-    Apply the provided action to the armature with the given name.
+    Apply an action and its corresponding action slot to the armature.
 
-    :param bpy.types.Armature armature: Armature object
-    :param bpy.types.Action action: Action object to be set
-    :param str action_name: New name of the action, defaults to "cascadeur_action"
+    :param list armatures: List of target armature objects.
+    :param tuple actions_data: A list of action data.
+    :param str action_name: New name of the action (from Cascadeur scene name),
+        defaults to "cascadeur_action".
     """
-    # TODO verify the type of armature and action
-    # print(f'Type of armature: {type(armature)}')
-    # print(f'Type of action: {type(action)}')
-    action.name = action_name
-    if not hasattr(armature.animation_data, "action"):
-        armature.animation_data_create()
-    armature.animation_data.action = action
+    # Create action data for armatures
+    for armature in armatures:
+        if not hasattr(armature.animation_data, "action"):
+            armature.animation_data_create()
+
+    if len(actions_data) == 1:
+        # If there is only one imported armature use the first selected armature to apply the data to it
+        action_data = actions_data[0]
+        action_data["action"].name = action_name
+
+        armatures[0].animation_data.action = action_data["action"]
+        armatures[0].animation_data.action_slot = action_data["action_slot"]
+        armatures[0].animation_data.action_slot.name_display = action_data[
+            "armature_name"
+        ]
+    else:
+        for action_data in actions_data:
+            for armature in armatures:
+                if action_data["armature_name"].startswith(armature.name):
+                    matching_armature = armature
+                    break
+
+            if not matching_armature:
+                continue
+
+            matching_armature.animation_data.action = action_data["action"]
+            matching_armature.animation_data.action_slot = action_data["action_slot"]
+            matching_armature.animation_data.action_slot.name_display = (
+                matching_armature.name
+            )
+
+        # Merge imported animations into one action
+        bpy.ops.object.select_all(action="DESELECT")
+
+        for armature in armatures:
+            armature.select_set(True)
+
+        bpy.context.view_layer.objects.active = armatures[0]
+        bpy.ops.anim.merge_animation()
+        armatures[0].animation_data.action.name = action_name
 
 
 class OperatorBaseClass(bpy.types.Operator):
@@ -249,6 +296,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
     bl_label = "Import Cascadeur Action"
 
     ao = None
+    selected_objects = []
     imported_objects = []
 
     @classmethod
@@ -287,8 +335,12 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
                     self.imported_objects.extend(objects)
                     scene_name = os.path.splitext(os.path.basename(file))[0]
                     file_handling.delete_file(file)
-                    actions = get_actions_from_armatures(objects)
-                    apply_action(self.ao, actions[0], scene_name)
+                    actions = get_imported_actions(objects)
+
+                    self.selected_armatures = [
+                        obj for obj in self.selected_objects if obj.type == "ARMATURE"
+                    ]
+                    apply_action(self.selected_armatures, actions, scene_name)
                 delete_objects(self.imported_objects)
 
                 self.ao.select_set(True)
@@ -302,6 +354,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
         self.start_operator()
 
         self.ao = bpy.context.active_object
+        self.selected_objects = bpy.context.selected_objects
 
         command_file = "temp_batch_exporter" if self.batch_export else "temp_exporter"
         CascadeurHandler().execute_csc_command(f"commands.externals.{command_file}")
