@@ -1,15 +1,3 @@
-bl_info = {
-    "name": "Cascadeur Bridge for Blender",
-    "author": "Aron Nemeth",
-    "version": (1, 1, 0),
-    "blender": (4, 2, 0),
-    "location": "View3D > Panels > CSC Bridge",
-    "description": "Helps you to integrate Cascadeur to your workflow with Belnder.",
-    "doc_url": "https://github.com/arcsikex/cascadeur_bridge",
-    "tracker_url": "https://github.com/arcsikex/cascadeur_bridge/issues",
-    "category": "Animation",
-}
-
 if "bpy" not in locals():
     from . import operators
     from . import ui
@@ -34,7 +22,7 @@ def update_all_tab_names(self, context) -> None:
         pass
 
     # Set panel name for base class
-    new_name = bpy.context.preferences.addons[__name__].preferences.csc_tab_name
+    new_name = bpy.context.preferences.addons[__package__].preferences.csc_tab_name
     ui.main_panel.PanelBasics.bl_category = new_name
     # Save to file
     config_handling.set_config_parameter("Addon Settings", "panel_name", new_name)
@@ -45,7 +33,7 @@ def update_all_tab_names(self, context) -> None:
 
 
 class CBB_preferences(bpy.types.AddonPreferences):
-    bl_idname = __name__
+    bl_idname = __package__
 
     csc_exe_path: bpy.props.StringProperty(
         name="Cascadeur executable",
