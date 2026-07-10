@@ -1,7 +1,7 @@
 import bpy
 
 from .addon_properties import get_csc_export_settings
-from ..utils import file_handling
+from ..utils import file_handling, action_handling
 from ..utils.server_socket import ServerSocket
 from ..utils.csc_handling import CascadeurHandler
 from .. import addon_info
@@ -70,24 +70,6 @@ def export_fbx(file_path: str) -> None:
     )
 
 
-def get_actions_from_armatures(selected_objects: list) -> list:
-    """
-    Get the actions from all of the selected objects in Blender.
-
-    :param list selected_objects: List of selected objects
-    :return list: List of obj.animation_data.action objects
-    """
-    actions = []
-    for obj in selected_objects:
-        if hasattr(obj.animation_data, "action"):
-            action = obj.animation_data.action
-            if obj.type == "ARMATURE":
-                actions.append(action)
-            else:
-                bpy.data.actions.remove(action)
-    return actions
-
-
 def delete_objects(objects: list) -> None:
     """
     Delete the provided list of objects.
@@ -107,27 +89,6 @@ def delete_objects(objects: list) -> None:
 
     # Update the scene to reflect the changes
     bpy.ops.wm.redraw_timer(type="DRAW_WIN_SWAP", iterations=1)
-
-
-def apply_action(
-    armature: bpy.types.Armature,
-    action: bpy.types.Action,
-    action_name: str = "cascadeur_action",
-) -> None:
-    """
-    Apply the provided action to the armature with the given name.
-
-    :param bpy.types.Armature armature: Armature object
-    :param bpy.types.Action action: Action object to be set
-    :param str action_name: New name of the action, defaults to "cascadeur_action"
-    """
-    # TODO verify the type of armature and action
-    # print(f'Type of armature: {type(armature)}')
-    # print(f'Type of action: {type(action)}')
-    action.name = action_name
-    if not hasattr(armature.animation_data, "action"):
-        armature.animation_data_create()
-    armature.animation_data.action = action
 
 
 class OperatorBaseClass(bpy.types.Operator):
@@ -249,6 +210,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
     bl_label = "Import Cascadeur Action"
 
     ao = None
+    selected_objects = []
     imported_objects = []
 
     @classmethod
@@ -287,12 +249,22 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
                     self.imported_objects.extend(objects)
                     scene_name = os.path.splitext(os.path.basename(file))[0]
                     file_handling.delete_file(file)
-                    actions = get_actions_from_armatures(objects)
-                    apply_action(self.ao, actions[0], scene_name)
+                    actions = action_handling.get_imported_actions(objects)
+
+                    self.selected_armatures = [
+                        obj for obj in self.selected_objects if obj.type == "ARMATURE"
+                    ]
+                    action_handling.apply_action(
+                        self.selected_armatures, actions, scene_name
+                    )
                 delete_objects(self.imported_objects)
 
-                self.ao.select_set(True)
+                # Reset selection
+                bpy.ops.object.select_all(action="DESELECT")
+                for obj in self.selected_objects:
+                    obj.select_set(True)
                 bpy.context.view_layer.objects.active = self.ao
+
                 self.report({"INFO"}, "Finished")
                 return {"FINISHED"}
 
@@ -302,6 +274,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
         self.start_operator()
 
         self.ao = bpy.context.active_object
+        self.selected_objects = bpy.context.selected_objects
 
         command_file = "temp_batch_exporter" if self.batch_export else "temp_exporter"
         CascadeurHandler().execute_csc_command(f"commands.externals.{command_file}")
