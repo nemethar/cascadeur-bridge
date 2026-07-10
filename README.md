@@ -28,12 +28,12 @@ For a visual introduction watch the youtube video:
 
 To install Cascadeur Bridge, follow these steps:
 
-1. Download the [latest release](https://github.com/arcsikex/cascadeur_bridge/releases/tag/1.0.3) from the **releases** (for Cascadeur 2024.1)
-    > For Cascadeur version **2023.2** use [Cascadeur Bridge 1.0.2](https://github.com/arcsikex/cascadeur_bridge/releases/tag/1.0.2)
+1. Download the [latest release](https://github.com/nemethar/cascadeur-bridge/releases) from the **releases** (for Cascadeur 2024.1)
+    > For Cascadeur version **2023.2** use [Cascadeur Bridge 1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2)
     > 
-    > For Cascadeur version **between 2022.3.1 and 2023.1** use [Cascadeur Bridge 1.0.0](https://github.com/arcsikex/cascadeur_bridge/releases/tag/1.0.0)
+    > For Cascadeur version **between 2022.3.1 and 2023.1** use [Cascadeur Bridge 1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0)
     > 
-    > For **2022.3.1 or older** use [Cascadeur Bridge 0.4.1](https://github.com/arcsikex/cascadeur_bridge/releases/tag/0.4.1)
+    > For **2022.3.1 or older** use [Cascadeur Bridge 0.4.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/0.4.1)
 3. Open Blender and go to **Edit > Preferences**
 4. Click on the Add-ons tab, then click the Install button at the top of the window
 5. Select the downloaded zip
@@ -72,8 +72,8 @@ To remove the addon
 3. **Permission Denied error** when trying to execute function from Blender
     - **Solution:** Give execute permission to your Cascadeur install folder
 4. **Cascadeur crashes**
-    - **Solution:** Stop Cascadeur process from the Task Manager. Please create an [Issues](https://github.com/arcsikex/cascadeur_bridge/issues) and attach Cascadeur logs to know why the crash happened.
+    - **Solution:** Stop Cascadeur process from the Task Manager. Please create an [Issues](https://github.com/nemethar/cascadeur-bridge/issues) and attach Cascadeur logs to know why the crash happened.
 
-If you have more idea/request or you found a bug please report it in the **[Issues](https://github.com/arcsikex/cascadeur_bridge/issues)**.
+If you have more idea/request or you found a bug please report it in the **[Issues](https://github.com/nemethar/cascadeur-bridge/issues)**.
 
 ---
