@@ -71,11 +71,19 @@ class ServerSocket:
             self.client_socket, client_address = self.sock.accept()
             print(f"Connection from {client_address}")
 
-    def close(self) -> None:
-        """
-        Closing the socket.
-        """
-        try:
+    def close(self):
+        """Close both the client and listening sockets."""
+
+        if self.client_socket is not None:
+            try:
+                self.client_socket.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+            self.client_socket.close()
+            self.client_socket = None
+
+        if self.sock is not None:
             self.sock.close()
-        except:
-            pass
+
+            self.sock = None

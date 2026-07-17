@@ -16,17 +16,19 @@ def run(scene):
         .get_tool("FbxSceneLoader")
         .get_fbx_loader(scene_pr)
     )
-
+    client = None
     try:
         client = ClientSocket()
+        message: dict = client.receive_message()
+        file_path = message.get("file_path")
+
+        import_method = getattr(fbx_scene_loader, message.get("import_method"))
+        import_method(file_path)
+        scene.info(f"File imported from {file_path}")
+        client.send_message("SUCCESS")
     except Exception as e:
         scene.error(f"Couldn't create socket. Error: {e}")
         return
-    message: dict = client.receive_message()
-    file_path = message.get("file_path")
-
-    import_method = getattr(fbx_scene_loader, message.get("import_method"))
-    import_method(file_path)
-    scene.info(f"File imported from {file_path}")
-    client.send_message("SUCCESS")
-    client.close()
+    finally:
+        if client is not None:
+            client.close()

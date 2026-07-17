@@ -39,10 +39,10 @@ files = "Import/export FBX from/to disk"
 [build]
 paths_exclude_pattern = [
   "__pycache__/",
+  "venv/",
   "/.github/",
   "/.git/",
   "/*.zip",
   "/.vscode/",
-  "/.venv/",
   "/.gitignore",
 ]
