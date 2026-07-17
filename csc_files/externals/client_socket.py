@@ -65,11 +65,14 @@ class ClientSocket:
         message = json.loads(message)
         return message
 
-    def close(self) -> None:
-        """
-        Closing the socket.
-        """
+    def close(self):
+        if self.client_socket is None:
+            return
+
         try:
-            self.client_socket.close()
-        except:
+            self.client_socket.shutdown(socket.SHUT_RDWR)
+        except OSError:
             pass
+
+        self.client_socket.close()
+        self.client_socket = None
