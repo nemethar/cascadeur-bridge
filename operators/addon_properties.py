@@ -142,7 +142,7 @@ class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
             "FBX Settings",
             "cbb_import_ignore_leaf_bones",
             bool,
-            fallback=True,
+            fallback=False,
         ),
     )
 
