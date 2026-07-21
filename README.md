@@ -44,7 +44,7 @@ All releases are available on the **[GitHub Releases](https://github.com/nemetha
 
 ### Installation Steps
 
-https://nemethar.github.io/cascadeur-bridge/doc/installation.mp4
+[Watch the installation guide](https://nemethar.github.io/cascadeur-bridge/doc/installation.mp4)
 
 1. Download the appropriate release.
 2. Drag the downloaded ZIP to Blender.
