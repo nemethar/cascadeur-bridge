@@ -1,6 +1,12 @@
+🟠 Blender 4.4+
+🔷 Cascadeur 2024.3+
+🪟 Windows
+🐧 Linux
+⚖ GPL-3.0
+
 # Cascadeur Bridge for Blender
 
-Cascadeur Bridge is a Blender addon designed to help you integrate Cascadeur into your workflow with Blender.
+Cascadeur Bridge is a Blender add-on that enables faster and more convenient transfer of models, scenes, and animations between Blender and Cascadeur.
 For a visual introduction watch the youtube video:
 
 [![Watch the video](https://img.youtube.com/vi/3J5R1G-g8Ig/default.jpg)](https://youtu.be/3J5R1G-g8Ig)
@@ -10,11 +16,10 @@ For a visual introduction watch the youtube video:
 - [Installation](#installation)
 - [Usage](#usage)
 - [Remove the addon](#remove-the-addon)
-- [Possible issues](#possible-issues)
+- [FAQ](#faq)
+- [Support the project](#support-the-project)
 
 ## Features
-
-![Cascadeur Bridge UI](/doc/addon_side_panel.png)
 
 - Start Cascadeur from Blender
 - Export from Blender to Cascadeur (Model, Scene, Animation)
@@ -26,54 +31,154 @@ For a visual introduction watch the youtube video:
 
 ## Installation
 
-To install Cascadeur Bridge, follow these steps:
+### Compatibility
+All releases are available on the **[GitHub Releases](https://github.com/nemethar/cascadeur-bridge/releases)** page.
 
-1. Download the [latest release](https://github.com/nemethar/cascadeur-bridge/releases) from the **releases** (for Cascadeur 2024.1)
-    > For Cascadeur version **2023.2** use [Cascadeur Bridge 1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2)
-    > 
-    > For Cascadeur version **between 2022.3.1 and 2023.1** use [Cascadeur Bridge 1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0)
-    > 
-    > For **2022.3.1 or older** use [Cascadeur Bridge 0.4.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/0.4.1)
-3. Open Blender and go to **Edit > Preferences**
-4. Click on the Add-ons tab, then click the Install button at the top of the window
-5. Select the downloaded zip
-6. Click the **Install Add-on** button, then enable the addon by clicking the checkbox next to its name
-7. **Set the Cascadeur executable path**
-8. Click the **Install Requirements** button (If you get an error try to restart Blender as an Admin)
+| Bridge Version | Blender | Cascadeur |
+|----------------|---------|-----------|
+| **[1.1.1 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1)** | **4.4+** | **2024.3+** |
+| [1.1.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.0) | 3.5 – 4.3 | 2024.3+ |
+| [1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2) | 3.5 – 4.3 | 2023.2 - 2024.2 |
+| [1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0) | 3.5 – 4.3 | 2022.3.1 – 2023.1 |
+| [0.4.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/0.4.1) | 3.5 – 4.3 | ≤2022.3.1 |
 
+### Installation Steps
 ![Preferences view of the addon](/doc/addon_pereferences.png)
+
+1. Download the appropriate release.
+2. Drag the downloaded ZIP to Blender.
+3. Open the **Edit → Preferences → Add-ons**
+4. Look for the **Cascadeur Bridge** add-on
+5. Set the Cascadeur executable path.
+6. Click **Install Requirements**.
+
+
+<details>
+<summary><strong> Installing legacy Bridge releases (1.1.0 and earlier)</summary></strong>
+
+1. Download the appropriate release.
+2. Open Blender and go to **Edit → Preferences**.
+3. Click **Add-ons → Install**.
+4. Select the downloaded ZIP.
+5. Enable the add-on.
+6. Set the Cascadeur executable path.
+7. Click **Install Requirements**.
+
+</details>
 
 ## Usage
 
-The addon can be accessed from the N panel of the 3D Viewport in Blender.
-- In the add-on preferences, you have the option to set the display name of the N panel. This feature is particularly useful if you want to merge the user interface with a different add-on.
-- **Export to Cascadeur** will export the Blender scene and import it to Cascadeur.
-- **Import Action**: To import an action into the selected object, first, make sure to select an **Armature that exactly matches the one in Cascadeur**.
- This operator will import the Cascadeur scene as an fbx file, apply the imported action to the selected armature, and then delete the imported objects.
-- **Import Scene** will simply import the current Cascadeur scene as an fbx file.
-- **Batch Import** Similar to "Import Scene" and "Import Action", but this option allows you to import scenes or actions from **all opened scenes in Cascadeur**.
-- **Cascadeur Export Settings and Blender Import/Export Settings:** The default settings are optimized for typical use, but you might need different settings based on your specific requirements. Adjust the usual Blender FBX export/import settings and the Cascadeur FBX export settings here. Once you find the settings that work for you, remember to click the Save Settings button.
+The add-on is available in the **CSC Bridge** tab of Blender's **3D Viewport N-panel**.
+
+![Cascadeur Bridge UI](/doc/addon_side_panel.png)
+
+### Export
+
+#### Export to Cascadeur
+
+Exports the current Blender scene to Cascadeur.
+
+### Import
+
+#### Import Action
+
+Imports the animation from the current Cascadeur scene onto the **selected armatures**.
+
+> **Note:** The selected Blender armatures must exactly match the armature in Cascadeur.
+
+This operator will import the Cascadeur scene as an fbx file, apply the imported action to the selected armature, and then delete the imported objects.
+
+#### Import Scene
+
+Imports the current Cascadeur scene as an FBX file.
+
+#### Batch Import
+
+Imports scenes or animations from **all currently opened Cascadeur scenes**.
+
+### Settings
+
+The default FBX settings are optimized for most workflows, but can be customized if needed.
+
+- **Cascadeur Export Settings** control how Cascadeur exports FBX files.
+- **Blender Import/Export Settings** control Blender's FBX importer and exporter.
+
+Once you've found settings that work for your workflow, click **Save Settings** to make them persistent.
+
+### Add-on Preferences
+
+The add-on preferences allow you to:
+
+- Set the Cascadeur executable path.
+- Change the name of the **Cascadeur** tab in the N-panel. This is useful if you want to group the Bridge UI with another add-on.
 
 
 ## Remove the addon
 
-To remove the addon 
-- from **Blender** go to **Edit > Preferences > Add-ons** and click on the Remove button of the add-on.
-- from **Cascadeur** 
-    - go to your commands folder (*CASCADEUR PATH\resources\scripts\python\commands*) and delete the ***externals*** folder. 
 
-## Possible issues
-1. "No connection could be made because the target machine actively refused it"
-    - Try to change the port in the Settings > Advanced section on the N panel.
-    - If the addon worked previously, but suddenly stopped working with this error, restarting your computer can likely solve the issue.
-2. **Wrong rotation/scale** of your mesh in Blender/Cascadeur
-    - Make sure that the transform values (especially rotation and scale) of your objects are applied in Blender
-    - Change the export/import settings to apply the correct orientation/scale
-3. **Permission Denied error** when trying to execute function from Blender
-    - **Solution:** Give execute permission to your Cascadeur install folder
-4. **Cascadeur crashes**
-    - **Solution:** Stop Cascadeur process from the Task Manager. Please create an [Issues](https://github.com/nemethar/cascadeur-bridge/issues) and attach Cascadeur logs to know why the crash happened.
+### Blender
+1. In **Blender** go to **Edit > Preferences > Get Extensions**
+2. Search for the **Cascadeur Bridge** extension
+3. Click the small dropdown arrow next to its name
+4. Select Uninstall and confirm the removal
+
+### Cascadeur
+- go to your commands folder (*CASCADEUR PATH\resources\scripts\python\commands*) and delete the ***externals*** folder.
+
+
+<details>
+<summary><strong>Removing legacy Bridge releases (1.1.0 and earlier)</strong></summary>
+
+- from Blender go to Edit > Preferences > Add-ons and click on the Remove button of the add-on.
+from Cascadeur
+- go to your commands folder (CASCADEUR PATH\resources\scripts\python\commands) and delete the externals folder.
+</details>
+
+## FAQ
+
+### Does Bridge work with the free version of Cascadeur?
+
+**Partially.** Sending models from Blender to Cascadeur works, but importing animations back requires an **Indie** or **Pro** license, or an active **14-day trial**.
+
+### Which versions are supported?
+
+Bridge is tested with the latest supported versions of Blender and Cascadeur. If either application receives a major update, the Bridge may also require an update.
+
+### I'm getting `ModuleNotFoundError`
+
+This usually means the required Bridge scripts weren't installed into Cascadeur. Run **Install Requirements** from the add-on preferences, then restart both Blender and Cascadeur.
+
+### Does it support Rigify or Auto-Rig Pro?
+
+Both add-ons generate armatures that include additional mechanism/control bones, so you'll need to export a clean deformation rig.
+
+* **Auto-Rig Pro** includes its own exporter for this, so the **Blender → Cascadeur** transfer must be done manually. Importing the animation back into Blender can then be done with the Bridge. Guide for using ARP with Cascadeur: [video](https://youtu.be/8B2pDvErb8g?si=UadPZxB4wGYw4iFN)
+* **Rigify** can be used together with the **[GameRigTools](https://toshicg.gumroad.com/l/game_rig_tools)** add-on to separate the deformation rig from the control rig. Once you have a clean deformation rig, the Bridge can transfer it between Blender and Cascadeur.
+
+In both cases, if you want to apply the imported animation back to your original control rig, you'll need to retarget it. **Auto-Rig Pro** includes built-in retargeting tools.
+
+### I'm getting a socket connection error
+
+Make sure Cascadeur is running, the Bridge scripts are installed, and your firewall isn't blocking localhost communication.
+
+If the Bridge encounters an unexpected error, restarting both Blender and Cascadeur often resolves the issue.
+
+### Does it work on macOS?
+
+Unfortunately no. I can't test the add-on on macOS myself.
+I am open to suggestions how to get access to ARM based Mac for testing.
+
 
 If you have more idea/request or you found a bug please report it in the **[Issues](https://github.com/nemethar/cascadeur-bridge/issues)**.
 
+
+## Support the Project
+
+If you find Cascadeur Bridge useful, you can support its development by:
+
+- Starring this repository.
+- Reporting bugs or suggesting new features.
+- Purchasing Cascadeur through my [affiliate link](https://cascadeur.com/plans?ref=aron) and using the promo code **ARON15** to receive a **15% discount**.
+
+Thank you for your support!
 ---
