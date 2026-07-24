@@ -48,3 +48,39 @@ class CBB_OT_install_required_files(bpy.types.Operator):
             return {"CANCELLED"}
         self.report({"INFO"}, "All necessary files have been successfully copied")
         return {"FINISHED"}
+
+
+class CBB_OT_setup_asset_library(bpy.types.Operator):
+    """Setup Cascadeur Asset Library"""
+
+    bl_idname = "cbb.setup_asset_library"
+    bl_label = "Add Cascadeur Asset Library"
+
+    @classmethod
+    def poll(cls, context):
+        return CascadeurHandler().is_csc_exe_path_valid
+
+    def execute(self, context):
+        addon_prefs = context.preferences.addons[addon_info.PACKAGE_NAME].preferences
+        LIB_NAME = addon_prefs.csc_asset_lib_name
+        LIB_URL = addon_info.ASSET_LIB_URL
+
+        # Check if asset library with the same name already exists
+        if LIB_NAME in bpy.context.preferences.filepaths.asset_libraries:
+            self.report({"ERROR"}, f"There is already an asset library with the name {LIB_NAME}")
+            return {"CANCELLED"}
+
+        bpy.ops.preferences.asset_library_add(
+            name=LIB_NAME,
+            remote_url=LIB_URL,
+            type="REMOTE",
+        )
+
+        # Change import method
+        lib = bpy.context.preferences.filepaths.asset_libraries[LIB_NAME]
+        lib.import_method = "APPEND"
+
+        # Save preferences
+        bpy.ops.wm.save_userpref()
+        self.report({"INFO"}, "Asset library added")
+        return {"FINISHED"}

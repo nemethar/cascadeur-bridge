@@ -15,6 +15,7 @@ classes = [
     fbx_transfer.CBB_OT_import_action_to_selected,
     csc_ops.CBB_OT_start_cascadeur,
     csc_ops.CBB_OT_install_required_files,
+    csc_ops.CBB_OT_setup_asset_library,
     addon_properties.CBB_OT_save_fbx_settings,
     addon_properties.CBB_OT_reset_fbx_settings,
     addon_properties.CBB_OT_save_port_number,

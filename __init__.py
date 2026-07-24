@@ -11,6 +11,7 @@ import bpy
 
 from .utils import config_handling
 from .utils.csc_handling import get_default_csc_exe_path
+from .addon_info import ASSET_LIB_NAME
 
 
 def update_all_tab_names(self, context) -> None:
@@ -48,6 +49,12 @@ class CBB_preferences(bpy.types.AddonPreferences):
         update=update_all_tab_names,
     )
 
+    csc_asset_lib_name: bpy.props.StringProperty(
+            name="Asset library name",
+            description="Name of the asset library with the Cascadeur Sample Scenes",
+            default=ASSET_LIB_NAME,
+        )
+
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=False)
@@ -61,6 +68,14 @@ class CBB_preferences(bpy.types.AddonPreferences):
             "cbb.install_required_files",
             text="Install Requirements",
             icon="MODIFIER",
+        )
+        col.separator()
+        row = col.row()
+        row.prop(self, "csc_asset_lib_name")
+        row.operator(
+            "cbb.setup_asset_library",
+            text="Add Cascadeur Asset Library",
+            icon="ASSET_MANAGER",
         )
 
 
