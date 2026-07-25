@@ -1,25 +1,9 @@
 import bpy
 import os
 
+from .. import addon_info
 from ..utils import file_handling
 from ..utils.csc_handling import CascadeurHandler
-from .. import addon_info
-
-
-class CBB_OT_start_cascadeur(bpy.types.Operator):
-    """Start Cascadeur"""
-
-    bl_idname = "cbb.start_cascadeur"
-    bl_label = "Start Cascadeur"
-
-    @classmethod
-    def poll(cls, context):
-        return CascadeurHandler().is_csc_exe_path_valid
-
-    def execute(self, context):
-        CascadeurHandler().start_cascadeur()
-        addon_info.operation_completed = True
-        return {"FINISHED"}
 
 
 class CBB_OT_install_required_files(bpy.types.Operator):
@@ -50,37 +34,41 @@ class CBB_OT_install_required_files(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class CBB_OT_setup_asset_library(bpy.types.Operator):
-    """Setup Cascadeur Asset Library"""
+class CBB_OT_add_cascadeur_asset_library(bpy.types.Operator):
+    """Add the Cascadeur asset library to Blender"""
 
-    bl_idname = "cbb.setup_asset_library"
+    bl_idname = "cbb.add_cascadeur_asset_library"
     bl_label = "Add Cascadeur Asset Library"
-
-    @classmethod
-    def poll(cls, context):
-        return CascadeurHandler().is_csc_exe_path_valid
 
     def execute(self, context):
         addon_prefs = context.preferences.addons[addon_info.PACKAGE_NAME].preferences
-        LIB_NAME = addon_prefs.csc_asset_lib_name
-        LIB_URL = addon_info.ASSET_LIB_URL
+        asset_lib_name = addon_prefs.csc_asset_lib_name
+        asset_lib_url = addon_info.ASSET_LIB_URL
+
+        asset_libraries = context.preferences.filepaths.asset_libraries
 
         # Check if asset library with the same name already exists
-        if LIB_NAME in bpy.context.preferences.filepaths.asset_libraries:
-            self.report({"ERROR"}, f"There is already an asset library with the name {LIB_NAME}")
+        if asset_lib_name in asset_libraries:
+            self.report({"ERROR"}, f"There is already an asset library with the name {asset_lib_name}")
             return {"CANCELLED"}
 
-        bpy.ops.preferences.asset_library_add(
-            name=LIB_NAME,
-            remote_url=LIB_URL,
-            type="REMOTE",
-        )
+        # Add the remote asset library
+        try:
+            bpy.ops.preferences.asset_library_add(
+                name=asset_lib_name,
+                remote_url=asset_lib_url,
+                type="REMOTE",
+            )
+        except Exception as e:
+            self.report({"ERROR"}, f"Failed to add asset library: {e}")
+            return {"CANCELLED"}
 
         # Change import method
-        lib = bpy.context.preferences.filepaths.asset_libraries[LIB_NAME]
+        lib = asset_libraries[asset_lib_name]
         lib.import_method = "APPEND"
 
-        # Save preferences
-        bpy.ops.wm.save_userpref()
-        self.report({"INFO"}, "Asset library added")
+        self.report(
+            {"INFO"},
+            "Asset library added. Remember to save your preferences."
+        )
         return {"FINISHED"}

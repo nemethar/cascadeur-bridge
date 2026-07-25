@@ -8,5 +8,5 @@ ADDON_PATH = os.path.dirname(os.path.abspath(__file__))
 operation_completed = True
 
 # Remote Assets
-ASSET_LIB_NAME = "Cascadeur Sample Scenes"
+DEFAULT_ASSET_LIB_NAME = "Cascadeur Sample Scenes"
 ASSET_LIB_URL = "https://nemethar.github.io/cascadeur-asset-library/"
