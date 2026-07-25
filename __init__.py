@@ -85,8 +85,6 @@ class CBB_preferences(bpy.types.AddonPreferences):
         )
 
 
-
-
 classes = [CBB_preferences] + operators.classes + ui.classes
 
 
