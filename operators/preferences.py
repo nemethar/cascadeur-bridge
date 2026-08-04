@@ -19,8 +19,8 @@ class CBB_OT_install_required_files(bpy.types.Operator):
     def execute(self, context):
         ch = CascadeurHandler()
         # Copy commands
-        commands_source = os.path.join(addon_info.ADDON_PATH, "csc_files", "externals")
-        commands_path = os.path.join(ch.commands_path, "externals")
+        commands_source = os.path.join(addon_info.ADDON_PATH, "csc_files", "blender_bridge")
+        commands_path = os.path.join(ch.commands_path, "blender_bridge")
         result = file_handling.copy_files(
             commands_source, commands_path, os.listdir(commands_source)
         )

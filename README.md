@@ -124,7 +124,7 @@ The add-on preferences allow you to:
 4. Select Uninstall and confirm the removal
 
 ### Cascadeur
-- go to your commands folder (*CASCADEUR PATH\resources\scripts\python\commands*) and delete the ***externals*** folder.
+- go to your commands folder (*CASCADEUR PATH\resources\scripts\python\commands*) and delete the ***blender_bridge*** folder.
 
 
 <details>
@@ -132,7 +132,7 @@ The add-on preferences allow you to:
 
 - from Blender go to Edit > Preferences > Add-ons and click on the Remove button of the add-on.
 from Cascadeur
-- go to your commands folder (CASCADEUR PATH\resources\scripts\python\commands) and delete the externals folder.
+- go to your commands folder (CASCADEUR PATH\resources\scripts\python\commands) and delete the blender_bridge folder.
 </details>
 
 ## FAQ

@@ -2,7 +2,10 @@ import csc
 
 
 def command_name():
-    return "External commands.Temp Exporter"
+    return "Blender Bridge.Temp Exporter"
+
+def command_description():
+    return ("SHOULD ONLY BE CALLED FROM BLENDER! This exports the current scene which will be imported in Blender.")
 
 
 def run(scene):

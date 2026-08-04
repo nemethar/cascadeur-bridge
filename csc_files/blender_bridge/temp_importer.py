@@ -2,7 +2,10 @@ import csc
 
 
 def command_name():
-    return "External commands.Temp Importer"
+    return "Blender Bridge.Temp Importer"
+
+def command_description():
+    return ("SHOULD ONLY BE CALLED FROM BLENDER! This imports the temporarily exported file from Blender into the current scene in Cascadeur.")
 
 
 def run(scene):
