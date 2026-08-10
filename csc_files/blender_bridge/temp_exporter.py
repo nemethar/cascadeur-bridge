@@ -1,11 +1,12 @@
 import csc
 
 
-def command_name():
+def name():
     return "Blender Bridge.Temp Exporter"
 
-def command_description():
-    return ("SHOULD ONLY BE CALLED FROM BLENDER! This exports the current scene which will be imported in Blender.")
+
+def description():
+    return "SHOULD ONLY BE CALLED FROM BLENDER! This exports the current scene which will be imported in Blender."
 
 
 def run(scene):

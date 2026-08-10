@@ -1,11 +1,12 @@
 import csc
 
 
-def command_name():
+def name():
     return "Blender Bridge.Temp Importer"
 
-def command_description():
-    return ("SHOULD ONLY BE CALLED FROM BLENDER! This imports the temporarily exported file from Blender into the current scene in Cascadeur.")
+
+def description():
+    return "SHOULD ONLY BE CALLED FROM BLENDER! This imports the temporarily exported file from Blender into the current scene in Cascadeur."
 
 
 def run(scene):

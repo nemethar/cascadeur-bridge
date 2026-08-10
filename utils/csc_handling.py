@@ -70,7 +70,7 @@ class CascadeurHandler:
             if platform.system() == "Darwin"
             else os.path.join(self.csc_dir, "resources")
         )
-        return os.path.join(resources_dir, "scripts", "python", "commands")
+        return os.path.join(resources_dir, "scripts", "python", "scripts")
 
     def start_cascadeur(self) -> None:
         """
