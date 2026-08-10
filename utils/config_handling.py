@@ -136,7 +136,7 @@ def save_port_number() -> bool:
 
     # Cascadeur config
     ch = CascadeurHandler()
-    commands_path = os.path.join(ch.commands_path, "externals", "settings.cfg")
+    commands_path = os.path.join(ch.commands_path, "blender_bridge", "settings.cfg")
     csc_config = configparser.ConfigParser()
     csc_config.read(commands_path)
     csc_config.set(section, "port", str(port_number))
