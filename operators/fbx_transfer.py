@@ -107,6 +107,7 @@ class OperatorBaseClass(bpy.types.Operator):
         on_execute()      - Trigger the Cascadeur command.
         on_connected()    - Handle socket communication.
     """
+
     server_socket = None
     _timer = None
 
@@ -213,7 +214,7 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
         export_fbx(self.file_path)
 
         # Ask Cascadeur to start its importer. It will connect back to Blender.
-        CascadeurHandler().execute_csc_command("commands.blender_bridge.temp_importer")
+        CascadeurHandler().execute_csc_command("scripts.blender_bridge.temp_importer")
 
     def on_connected(self, context):
         # Tell Cascadeur where the temporary FBX is located.
@@ -252,7 +253,7 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
         # Ask Cascadeur to export the current scene (or every scene)
         command = "temp_batch_exporter" if self.batch_export else "temp_exporter"
 
-        CascadeurHandler().execute_csc_command(f"commands.blender_bridge.{command}")
+        CascadeurHandler().execute_csc_command(f"scripts.blender_bridge.{command}")
 
     def on_connected(self, context):
         # Send Blender's export settings to Cascadeur

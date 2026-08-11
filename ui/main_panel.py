@@ -22,11 +22,26 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
         addon_props = context.scene.cbb_fbx_settings
         layout = self.layout
         col = layout.column(align=False)
+
+        errors = []
+
         if not _ch.is_csc_exe_path_valid:
-            col.label(
-                icon="ERROR", text="Set a valid Cascadeur exe path in preferences!"
-            )
+            errors.append("No valid Cascadeur exe path set in preferences!")
+
+        if not _ch.is_csc_bridge_installed:
+            errors.append("Cascadeur side of the add-on is not installed!")
+
+        if errors:
+            for error in errors:
+                col.label(icon="ERROR", text=error)
+
             col.separator()
+            col.operator(
+                "cbb.open_preferences",
+                text="Open Preferences",
+                icon="PREFERENCES",
+            )
+            return
 
         row = col.row()
 

@@ -10,7 +10,7 @@ else:
 import bpy
 
 from .utils import config_handling
-from .utils.csc_handling import get_default_csc_exe_path
+from .utils.csc_handling import get_default_csc_exe_path, CascadeurHandler
 from .addon_info import DEFAULT_ASSET_LIB_NAME
 
 
@@ -50,12 +50,13 @@ class CBB_preferences(bpy.types.AddonPreferences):
     )
 
     csc_asset_lib_name: bpy.props.StringProperty(
-            name="Asset library name",
-            description="Name of the asset library with the Cascadeur Sample Scenes",
-            default=DEFAULT_ASSET_LIB_NAME,
-        )
+        name="Asset library name",
+        description="Name of the asset library with the Cascadeur Sample Scenes",
+        default=DEFAULT_ASSET_LIB_NAME,
+    )
 
     def draw(self, context):
+        _ch = CascadeurHandler()
         layout = self.layout
         col = layout.column(align=False)
         col.prop(self, "csc_tab_name")
@@ -63,10 +64,12 @@ class CBB_preferences(bpy.types.AddonPreferences):
         col.separator(type="SPACE", factor=1.5)
 
         box = col.box()
-        box.label(icon="MODIFIER", text="Installation")
-        box.prop(self, "csc_exe_path")
         row = box.row()
-        row.alert = True
+        row.alert = not _ch.is_csc_exe_path_valid
+        row.label(icon="MODIFIER", text="Installation")
+        row.prop(self, "csc_exe_path")
+        row = box.row()
+        row.alert = not _ch.is_csc_bridge_installed
         row.operator(
             "cbb.install_required_files",
             text="Install Requirements",

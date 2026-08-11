@@ -19,7 +19,9 @@ class CBB_OT_install_required_files(bpy.types.Operator):
     def execute(self, context):
         ch = CascadeurHandler()
         # Copy commands
-        commands_source = os.path.join(addon_info.ADDON_PATH, "csc_files", "blender_bridge")
+        commands_source = os.path.join(
+            addon_info.ADDON_PATH, "csc_files", "blender_bridge"
+        )
         commands_path = os.path.join(ch.commands_path, "blender_bridge")
         result = file_handling.copy_files(
             commands_source, commands_path, os.listdir(commands_source)
@@ -49,7 +51,10 @@ class CBB_OT_add_cascadeur_asset_library(bpy.types.Operator):
 
         # Check if asset library with the same name already exists
         if asset_lib_name in asset_libraries:
-            self.report({"ERROR"}, f"There is already an asset library with the name {asset_lib_name}")
+            self.report(
+                {"ERROR"},
+                f"There is already an asset library with the name {asset_lib_name}",
+            )
             return {"CANCELLED"}
 
         # Add the remote asset library
@@ -67,8 +72,15 @@ class CBB_OT_add_cascadeur_asset_library(bpy.types.Operator):
         lib = asset_libraries[asset_lib_name]
         lib.import_method = "APPEND"
 
-        self.report(
-            {"INFO"},
-            "Asset library added. Remember to save your preferences."
-        )
+        self.report({"INFO"}, "Asset library added. Remember to save your preferences.")
+        return {"FINISHED"}
+
+
+class CBB_OT_open_preferences(bpy.types.Operator):
+    bl_idname = "cbb.open_preferences"
+    bl_label = "Open Cascadeur Bridge Preferences"
+    bl_description = "Open the Cascadeur Bridge add-on preferences"
+
+    def execute(self, context):
+        bpy.ops.preferences.addon_show(module="bl_ext.user_default.cascadeur_bridge")
         return {"FINISHED"}

@@ -23,6 +23,16 @@ def get_default_csc_exe_path() -> str:
 
 
 class CascadeurHandler:
+    CASCADEUR_BRIDGE_FILES = (
+        "__init__.py",
+        "client_socket.py",
+        "commons.py",
+        "settings.cfg",
+        "temp_batch_exporter.py",
+        "temp_exporter.py",
+        "temp_importer.py",
+    )
+
     @property
     def csc_exe_path_addon_preference(self) -> str:
         """
@@ -57,6 +67,23 @@ class CascadeurHandler:
         """
         csc_path = self.csc_exe_path_addon_preference
         return True if csc_path and file_handling.file_exists(csc_path) else False
+
+    @property
+    def is_csc_bridge_installed(self) -> bool:
+        """
+        Check if the Cascadeur side of the Blender Bridge is installed.
+
+        :return: True if all required Bridge files are present.
+        """
+        if not self.is_csc_exe_path_valid:
+            return False
+
+        bridge_dir = os.path.join(self.commands_path, "blender_bridge")
+
+        return os.path.isdir(bridge_dir) and all(
+            file_handling.file_exists(os.path.join(bridge_dir, filename))
+            for filename in self.CASCADEUR_BRIDGE_FILES
+        )
 
     @property
     def commands_path(self) -> str:
