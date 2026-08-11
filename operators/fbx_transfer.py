@@ -304,7 +304,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
 
         command = "temp_batch_exporter" if self.batch_export else "temp_exporter"
 
-        CascadeurHandler().execute_csc_command(f"commands.blender_bridge.{command}")
+        CascadeurHandler().execute_csc_command(f"scripts.blender_bridge.{command}")
 
     def on_connected(self, context):
         self.server_socket.send_message(get_csc_export_settings())
