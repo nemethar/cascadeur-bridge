@@ -18,7 +18,7 @@ class CBB_OT_install_required_files(bpy.types.Operator):
 
     def execute(self, context):
         ch = CascadeurHandler()
-        # Copy commands
+        # Copy scripts
         commands_source = os.path.join(
             addon_info.ADDON_PATH, "csc_files", "blender_bridge"
         )
@@ -30,7 +30,10 @@ class CBB_OT_install_required_files(bpy.types.Operator):
             self.report(
                 {"ERROR"}, "You don't have permission to copy the files for Cascadeur"
             )
-            self.report({"INFO"}, "Restart Blender as Admin and try again")
+            self.report(
+                {"INFO"},
+                "Check the Manual Installation Guide or Restart Blender as Admin and try again",
+            )
             return {"CANCELLED"}
         self.report({"INFO"}, "All necessary files have been successfully copied")
         return {"FINISHED"}

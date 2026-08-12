@@ -57,6 +57,8 @@ class CascadeurHandler:
                 if platform.system() == "Darwin"
                 else os.path.dirname(self.csc_exe_path_addon_preference)
             )
+        else:
+            return None
 
     @property
     def is_csc_exe_path_valid(self) -> bool:
@@ -92,6 +94,9 @@ class CascadeurHandler:
 
         :return str: Directory path as a string.
         """
+        if not self.csc_dir:
+            return None
+
         resources_dir = (
             os.path.join(self.csc_dir, "Contents", "MacOS", "resources")
             if platform.system() == "Darwin"

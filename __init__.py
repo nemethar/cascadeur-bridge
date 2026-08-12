@@ -8,6 +8,7 @@ else:
     importlib.reload(ui)
 
 import bpy
+import os
 
 from .utils import config_handling
 from .utils.csc_handling import get_default_csc_exe_path, CascadeurHandler
@@ -64,17 +65,71 @@ class CBB_preferences(bpy.types.AddonPreferences):
         col.separator(type="SPACE", factor=1.5)
 
         box = col.box()
+
+        row = box.row()
+        row.label(icon="MODIFIER", text="Cascadeur Setup")
+
         row = box.row()
         row.alert = not _ch.is_csc_exe_path_valid
-        row.label(icon="MODIFIER", text="Installation")
         row.prop(self, "csc_exe_path")
+
+        row = box.row()
+        box.separator(type="LINE")
+
+        row = box.row()
+        row.label(text="Cascadeur Scripts")
+        row = box.row()
+        if _ch.is_csc_bridge_installed:
+            row.label(icon="CHECKMARK", text="Cascadeur scripts are already installed.")
+        else:
+            row.label(
+                icon="INFO",
+                text="The Bridge requires additional scripts to be copied to your Cascadeur install folder.",
+            )
+
         row = box.row()
         row.alert = not _ch.is_csc_bridge_installed
         row.operator(
             "cbb.install_required_files",
-            text="Install Requirements",
+            text="Install Automatically",
             icon="MODIFIER",
         )
+        row = box.row()
+        row.label(
+            text="or",
+        )
+
+        # Manual installation guide
+        header, panel = box.panel("cbb_manual_install", default_closed=True)
+
+        header.label(text="Install Manually:")
+
+        if panel:
+            source_path = os.path.join(addon_info.ADDON_PATH, "csc_files")
+            target_path = _ch.commands_path
+
+            row = panel.row()
+            row.label(
+                text="1. Copy the entire blender_bridge folder from the add-on's directory:"
+            )
+            row = panel.row()
+            row.operator("wm.path_open", text="", icon="FILE_FOLDER").filepath = (
+                source_path
+            )
+
+            row = panel.row()
+            row.label(
+                text="2. Paste the blender_bridge folder to the Cascadeur scripts folder:"
+            )
+            row = panel.row()
+            if target_path:
+                row.operator("wm.path_open", text="", icon="FILE_FOLDER").filepath = (
+                    target_path
+                )
+            else:
+                row.label(text=" Please enter a valid Cascadeur executable path first!")
+
+            panel.label(text="3. Restart Cascadeur")
 
         col.separator(type="SPACE", factor=1.5)
 
