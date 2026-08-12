@@ -18,6 +18,7 @@ classes = [
     cascadeur.CBB_OT_start_cascadeur,
     preferences.CBB_OT_install_required_files,
     preferences.CBB_OT_add_cascadeur_asset_library,
+    preferences.CBB_OT_open_preferences,
     addon_properties.CBB_OT_save_fbx_settings,
     addon_properties.CBB_OT_reset_fbx_settings,
     addon_properties.CBB_OT_save_port_number,
