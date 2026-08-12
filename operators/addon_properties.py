@@ -7,6 +7,13 @@ def generate_items(options: list) -> list:
 
 
 class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
+    cbb_file_format: bpy.props.EnumProperty(
+        items=generate_items(["fbx", "glb"]),
+        name="File Format",
+        description="Fileformat used for export/import",
+        default="fbx",
+    )
+
     # Cascadeur Export settings
     cbb_csc_import_selected: bpy.props.BoolProperty(
         name="Selected Interval",

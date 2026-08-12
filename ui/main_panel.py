@@ -113,7 +113,13 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
 
         row = col.row()
         row.label(text="Cascadeur > Blender")
+        row.operator(
+            "cbb.cascadeur_to_blender_settings",
+            text="",
+            icon="SETTINGS",
+        )
         row.scale_y = 1.2
+        col.separator(type="LINE")
 
         row = col.row()
         row.prop(addon_props, "cbb_export_methods")
