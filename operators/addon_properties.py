@@ -6,15 +6,67 @@ def generate_items(options: list) -> list:
     return [(option, option, "") for option in options]
 
 
-class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
-    cbb_file_format: bpy.props.EnumProperty(
+class CBB_PG_file_format_settings(bpy.types.PropertyGroup):
+    cbb_cascadeur_to_blender: bpy.props.EnumProperty(
         items=generate_items(["fbx", "glb"]),
         name="File Format",
-        description="Fileformat used for export/import",
+        description="Fileformat used for Cascadeur to Blender transfer",
         default="fbx",
     )
 
-    # Cascadeur Export settings
+    cbb_blender_to_cascadeur: bpy.props.EnumProperty(
+        items=generate_items(["fbx", "glb"]),
+        name="File Format",
+        description="Fileformat used for Blender to Cascadeur transfer",
+        default="fbx",
+    )
+
+
+class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
+    cbb_import_methods: bpy.props.EnumProperty(
+        name="Cascadeur Import Method",
+        items=(
+            ("add_model", "Add Model", ""),
+            ("add_model_to_selected", "Add Model to Selected", ""),
+            ("import_animation", "Animation", ""),
+            ("import_animation_to_selected_frames", "Animation - selected frames", ""),
+            ("import_animation_to_selected_objects", "Animation - selected joints", ""),
+            ("import_model", "Model", ""),
+            ("import_scene", "Scene", ""),
+        ),
+        description="Method to use when exporting from Cascadeur",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_import_methods",
+            str,
+            fallback="import_model",
+        ),
+    )  # type: ignore
+
+
+class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
+    cbb_export_methods: bpy.props.EnumProperty(
+        name="Cascadeur Export Method",
+        items=(
+            ("export_all_objects", "Export All Objects", ""),
+            ("export_joints", "Animation", ""),
+            ("export_joints_selected", "Animation - selected joints and frames", ""),
+            ("export_joints_selected_frames", "Animation - selected frames", ""),
+            ("export_joints_selected_objects", "Animation - selected joints", ""),
+            ("export_model", "Model", ""),
+            ("export_scene_selected", "Scene - selected objects and frames", ""),
+            ("export_scene_selected_frames", "Scene - selected frames", ""),
+            ("export_scene_selected_objects", "Scene - selected objects", ""),
+        ),
+        description="Method to use when exporting from Cascadeur",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_export_methods",
+            str,
+            fallback="export_all_objects",
+        ),
+    )  # type: ignore
+
     cbb_csc_import_selected: bpy.props.BoolProperty(
         name="Selected Interval",
         description="Import selected interval only",
@@ -60,7 +112,8 @@ class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
         ),
     )
 
-    # Blender Import settings
+
+class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
     cbb_import_global_scale: bpy.props.FloatProperty(
         name="Global Scale",
         description="Scale",
@@ -210,7 +263,8 @@ class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
         ),
     )
 
-    # Blender Export settings
+
+class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
     cbb_export_use_selection: bpy.props.BoolProperty(
         name="Selected Objects",
         description="Export selected and visible objects only",
@@ -373,48 +427,8 @@ class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
         ),
     )
 
-    cbb_export_methods: bpy.props.EnumProperty(
-        name="Cascadeur Export Method",
-        items=(
-            ("export_all_objects", "Export All Objects", ""),
-            ("export_joints", "Animation", ""),
-            ("export_joints_selected", "Animation - selected joints and frames", ""),
-            ("export_joints_selected_frames", "Animation - selected frames", ""),
-            ("export_joints_selected_objects", "Animation - selected joints", ""),
-            ("export_model", "Model", ""),
-            ("export_scene_selected", "Scene - selected objects and frames", ""),
-            ("export_scene_selected_frames", "Scene - selected frames", ""),
-            ("export_scene_selected_objects", "Scene - selected objects", ""),
-        ),
-        description="Method to use when exporting from Cascadeur",
-        default=config_handling.get_config_parameter(
-            "FBX Settings",
-            "cbb_export_methods",
-            str,
-            fallback="export_all_objects",
-        ),
-    )  # type: ignore
 
-    cbb_import_methods: bpy.props.EnumProperty(
-        name="Cascadeur Import Method",
-        items=(
-            ("add_model", "Add Model", ""),
-            ("add_model_to_selected", "Add Model to Selected", ""),
-            ("import_animation", "Animation", ""),
-            ("import_animation_to_selected_frames", "Animation - selected frames", ""),
-            ("import_animation_to_selected_objects", "Animation - selected joints", ""),
-            ("import_model", "Model", ""),
-            ("import_scene", "Scene", ""),
-        ),
-        description="Method to use when exporting from Cascadeur",
-        default=config_handling.get_config_parameter(
-            "FBX Settings",
-            "cbb_import_methods",
-            str,
-            fallback="import_model",
-        ),
-    )  # type: ignore
-
+class CBB_PG_networking_settings(bpy.types.PropertyGroup):
     cbb_port: bpy.props.IntProperty(
         name="Port",
         description="Port number used for communicating with Cascadeur",
@@ -429,20 +443,63 @@ class CBB_PG_fbx_settings(bpy.types.PropertyGroup):
     )
 
 
+class CBB_PG_settings(bpy.types.PropertyGroup):
+    file_format: bpy.props.PointerProperty(
+        type=CBB_PG_file_format_settings,
+    )
+
+    cascadeur_fbx_import: bpy.props.PointerProperty(
+        type=CBB_PG_cascadeur_fbx_import_settings,
+    )
+
+    cascadeur_fbx_export: bpy.props.PointerProperty(
+        type=CBB_PG_cascadeur_fbx_export_settings,
+    )
+
+    blender_fbx_import: bpy.props.PointerProperty(
+        type=CBB_PG_blender_fbx_import_settings,
+    )
+
+    blender_fbx_export: bpy.props.PointerProperty(
+        type=CBB_PG_blender_fbx_export_settings,
+    )
+
+    network: bpy.props.PointerProperty(
+        type=CBB_PG_networking_settings,
+    )
+
+
+PROPERTY_GROUPS = (
+    CBB_PG_file_format_settings,
+    CBB_PG_cascadeur_fbx_import_settings,
+    CBB_PG_cascadeur_fbx_export_settings,
+    CBB_PG_blender_fbx_import_settings,
+    CBB_PG_blender_fbx_export_settings,
+    CBB_PG_networking_settings,
+    # Parent property group. Should be registered last!
+    CBB_PG_settings,
+)
+
+
 def register_props():
-    bpy.utils.register_class(CBB_PG_fbx_settings)
-    bpy.types.Scene.cbb_fbx_settings = bpy.props.PointerProperty(
-        type=CBB_PG_fbx_settings
+    for cls in PROPERTY_GROUPS:
+        bpy.utils.register_class(cls)
+
+    bpy.types.Scene.cbb_settings = bpy.props.PointerProperty(
+        type=CBB_PG_settings,
     )
 
 
 def unregister_props():
-    bpy.utils.unregister_class(CBB_PG_fbx_settings)
+    del bpy.types.Scene.cbb_settings
+
+    for cls in reversed(PROPERTY_GROUPS):
+        bpy.utils.unregister_class(cls)
 
 
 def get_csc_export_settings() -> dict:
     settings = {}
-    addon_props = bpy.context.scene.cbb_fbx_settings
+    addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_export
     settings["selected_interval"] = addon_props.cbb_csc_import_selected
     settings["euler_filter"] = addon_props.cbb_csc_apply_euler_filter
     settings["up_axis"] = addon_props.cbb_csc_up_axis

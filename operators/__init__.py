@@ -3,6 +3,7 @@ if "bpy" not in locals():
     from . import cascadeur
     from . import addon_properties
     from . import preferences
+    from . import settings
 else:
     import importlib
 
@@ -19,7 +20,8 @@ classes = [
     preferences.CBB_OT_install_required_files,
     preferences.CBB_OT_add_cascadeur_asset_library,
     preferences.CBB_OT_open_preferences,
-    preferences.CBB_OT_cascadeur_to_blender_settings,
+    settings.CBB_OT_cascadeur_to_blender_settings,
+    settings.CBB_OT_blender_to_cascadeur_settings,
     addon_properties.CBB_OT_save_fbx_settings,
     addon_properties.CBB_OT_reset_fbx_settings,
     addon_properties.CBB_OT_save_port_number,

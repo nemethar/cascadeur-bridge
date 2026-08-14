@@ -98,13 +98,13 @@ def save_fbx_settings() -> None:
     if not config.has_section(section):
         config.add_section(section)
 
-    my_group = bpy.context.scene.cbb_fbx_settings
+    addon_props = bpy.context.scene.cbb_settings
 
-    for attr_name, _ in my_group.rna_type.properties.items():
+    for attr_name, _ in addon_props.rna_type.properties.items():
         if attr_name == "cbb_port":
             continue
         if attr_name not in ["rna_type", "name"]:
-            config.set(section, attr_name, str(getattr(my_group, attr_name)))
+            config.set(section, attr_name, str(getattr(addon_props, attr_name)))
 
     with open(config_path, "w") as configfile:
         config.write(configfile)
@@ -122,17 +122,17 @@ def reset_fbx_settings() -> None:
         with open(config_path, "w") as config_file:
             config.write(config_file)
 
-    cbb_props = bpy.context.scene.cbb_fbx_settings
+    addon_props = bpy.context.scene.cbb_settings
     # Reset properties to their default values
-    for prop_name, _ in cbb_props.rna_type.properties.items():
+    for prop_name, _ in addon_props.rna_type.properties.items():
         if prop_name not in ["rna_type", "name"]:
-            cbb_props.property_unset(prop_name)
+            addon_props.property_unset(prop_name)
 
 
 def save_port_number() -> bool:
     section = "Addon Settings"
-    addon_props = bpy.context.scene.cbb_fbx_settings
-    port_number = addon_props.cbb_port
+    addon_props = bpy.context.scene.cbb_settings
+    port_number = addon_props.network.cbb_port
 
     # Cascadeur config
     ch = CascadeurHandler()

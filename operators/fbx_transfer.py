@@ -16,25 +16,25 @@ def import_fbx(file_path: str) -> list:
     :param str file_path: FBX file path to be imported
     :return list: List of selected objects in the scene
     """
-    addon_props = bpy.context.scene.cbb_fbx_settings
+    import_props = bpy.context.scene.cbb_settings.blender_fbx_import
     bpy.ops.import_scene.fbx(
         filepath=file_path,
         # Transform
-        global_scale=addon_props.cbb_import_global_scale,
-        bake_space_transform=addon_props.cbb_import_apply_transform,
-        use_manual_orientation=addon_props.cbb_import_manual_orientation,
-        axis_forward=addon_props.cbb_import_axis_forward,
-        axis_up=addon_props.cbb_import_axis_up,
+        global_scale=import_props.cbb_import_global_scale,
+        bake_space_transform=import_props.cbb_import_apply_transform,
+        use_manual_orientation=import_props.cbb_import_manual_orientation,
+        axis_forward=import_props.cbb_import_axis_forward,
+        axis_up=import_props.cbb_import_axis_up,
         # Animation
-        use_anim=addon_props.cbb_import_use_anim,
-        anim_offset=addon_props.cbb_import_anim_offset,
+        use_anim=import_props.cbb_import_use_anim,
+        anim_offset=import_props.cbb_import_anim_offset,
         # Armature
-        ignore_leaf_bones=addon_props.cbb_import_ignore_leaf_bones,
-        force_connect_children=addon_props.cbb_import_force_connect_children,
-        automatic_bone_orientation=addon_props.cbb_import_automatic_bone_orientation,
-        primary_bone_axis=addon_props.cbb_import_primary_bone_axis,
-        secondary_bone_axis=addon_props.cbb_import_secondary_bone_axis,
-        use_prepost_rot=addon_props.cbb_import_use_prepost_rot,
+        ignore_leaf_bones=import_props.cbb_import_ignore_leaf_bones,
+        force_connect_children=import_props.cbb_import_force_connect_children,
+        automatic_bone_orientation=import_props.cbb_import_automatic_bone_orientation,
+        primary_bone_axis=import_props.cbb_import_primary_bone_axis,
+        secondary_bone_axis=import_props.cbb_import_secondary_bone_axis,
+        use_prepost_rot=import_props.cbb_import_use_prepost_rot,
     )
     # Return the list of imported objects
     return bpy.context.selected_objects
@@ -47,26 +47,26 @@ def export_fbx(file_path: str) -> None:
 
     :param str file_path: Path of the fbx file.
     """
-    addon_props = bpy.context.scene.cbb_fbx_settings
+    export_props = bpy.context.scene.cbb_settings.blender_fbx_export
     bpy.ops.export_scene.fbx(
         filepath=file_path,
         # Include
-        use_selection=addon_props.cbb_export_use_selection,
-        object_types=addon_props.cbb_export_object_types,
+        use_selection=export_props.cbb_export_use_selection,
+        object_types=export_props.cbb_export_object_types,
         # Transform
-        global_scale=addon_props.cbb_export_global_scale,
-        axis_forward=addon_props.cbb_export_axis_forward,
-        axis_up=addon_props.cbb_export_axis_up,
-        bake_space_transform=addon_props.cbb_export_apply_transform,
+        global_scale=export_props.cbb_export_global_scale,
+        axis_forward=export_props.cbb_export_axis_forward,
+        axis_up=export_props.cbb_export_axis_up,
+        bake_space_transform=export_props.cbb_export_apply_transform,
         # Armature
-        primary_bone_axis=addon_props.cbb_export_primary_bone_axis,
-        secondary_bone_axis=addon_props.cbb_export_secondary_bone_axis,
-        use_armature_deform_only=addon_props.cbb_export_deform_only,
-        add_leaf_bones=addon_props.cbb_export_leaf_bones,
+        primary_bone_axis=export_props.cbb_export_primary_bone_axis,
+        secondary_bone_axis=export_props.cbb_export_secondary_bone_axis,
+        use_armature_deform_only=export_props.cbb_export_deform_only,
+        add_leaf_bones=export_props.cbb_export_leaf_bones,
         # Animation
-        bake_anim=addon_props.cbb_export_bake_anim,
-        bake_anim_use_nla_strips=addon_props.cbb_export_use_nla_strips,
-        bake_anim_use_all_actions=addon_props.cbb_export_use_all_actions,
+        bake_anim=export_props.cbb_export_bake_anim,
+        bake_anim_use_nla_strips=export_props.cbb_export_use_nla_strips,
+        bake_anim_use_all_actions=export_props.cbb_export_use_all_actions,
     )
 
 
@@ -221,7 +221,7 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
         self.server_socket.send_message(
             {
                 "file_path": self.file_path,
-                "import_method": bpy.context.scene.cbb_fbx_settings.cbb_import_methods,
+                "import_method": bpy.context.scene.cbb_settings.cascadeur_fbx_import.cbb_import_methods,
             }
         )
 
