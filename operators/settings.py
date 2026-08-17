@@ -36,9 +36,9 @@ class CBB_OT_blender_to_cascadeur_settings(bpy.types.Operator):
         return context.window_manager.invoke_props_dialog(
             self,
             title="Settings for Blender to Cascadeur file transfer",
-            confirm_text="Save Settings",
+            confirm_text="💾 Save Settings",
             cancel_default=False,
-            width=600,
+            width=650,
         )
 
     def draw(self, context):

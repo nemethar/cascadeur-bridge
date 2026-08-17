@@ -50,23 +50,46 @@ def export_fbx(file_path: str) -> None:
     export_props = bpy.context.scene.cbb_settings.blender_fbx_export
     bpy.ops.export_scene.fbx(
         filepath=file_path,
+        # Path mode
+        path_mode=export_props.cbb_path_mode,
+        embed_textures=export_props.cbb_embed_textures,
         # Include
-        use_selection=export_props.cbb_export_use_selection,
-        object_types=export_props.cbb_export_object_types,
+        use_selection=export_props.cbb_use_selection,
+        use_visible=export_props.cbb_use_visible,
+        use_active_collection=export_props.cbb_use_active_collection,
+        object_types=export_props.cbb_object_types,
+        use_custom_props=export_props.cbb_use_custom_props,
         # Transform
-        global_scale=export_props.cbb_export_global_scale,
-        axis_forward=export_props.cbb_export_axis_forward,
-        axis_up=export_props.cbb_export_axis_up,
-        bake_space_transform=export_props.cbb_export_apply_transform,
+        global_scale=export_props.cbb_global_scale,
+        apply_scale_options=export_props.cbb_apply_scale_options,
+        axis_forward=export_props.cbb_axis_forward,
+        axis_up=export_props.cbb_axis_up,
+        apply_unit_scale=export_props.cbb_apply_unit_scale,
+        use_space_transform=export_props.cbb_use_space_transform,
+        bake_space_transform=export_props.cbb_apply_transform,
+        # Geometry
+        mesh_smooth_type=export_props.cbb_mesh_smooth_type,
+        use_subsurf=export_props.cbb_use_subsurf,
+        use_mesh_modifiers=export_props.cbb_use_mesh_modifiers,
+        use_mesh_edges=export_props.cbb_use_mesh_edges,
+        use_triangles=export_props.cbb_use_triangles,
+        use_tspace=export_props.cbb_use_tspace,
+        colors_type=export_props.cbb_colors_type,
+        prioritize_active_color=export_props.cbb_prioritize_active_color,
         # Armature
-        primary_bone_axis=export_props.cbb_export_primary_bone_axis,
-        secondary_bone_axis=export_props.cbb_export_secondary_bone_axis,
-        use_armature_deform_only=export_props.cbb_export_deform_only,
-        add_leaf_bones=export_props.cbb_export_leaf_bones,
+        primary_bone_axis=export_props.cbb_primary_bone_axis,
+        secondary_bone_axis=export_props.cbb_secondary_bone_axis,
+        armature_nodetype=export_props.cbb_armature_nodetype,
+        use_armature_deform_only=export_props.cbb_deform_only,
+        add_leaf_bones=export_props.cbb_leaf_bones,
         # Animation
-        bake_anim=export_props.cbb_export_bake_anim,
-        bake_anim_use_nla_strips=export_props.cbb_export_use_nla_strips,
-        bake_anim_use_all_actions=export_props.cbb_export_use_all_actions,
+        bake_anim=export_props.cbb_bake_anim,
+        bake_anim_use_all_bones=export_props.cbb_bake_anim_use_all_bones,
+        bake_anim_use_nla_strips=export_props.cbb_use_nla_strips,
+        bake_anim_use_all_actions=export_props.cbb_use_all_actions,
+        bake_anim_force_startend_keying=export_props.cbb_bake_anim_force_startend_keying,
+        bake_anim_step=export_props.cbb_bake_anim_step,
+        bake_anim_simplify_factor=export_props.cbb_bake_anim_simplify_factor,
     )
 
 
