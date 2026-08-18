@@ -5,7 +5,25 @@ from .. import icons
 def draw_blender_to_cascadeur_settings(layout, context):
     addon_props = context.scene.cbb_settings
 
-    layout.prop(addon_props.file_format, "cbb_blender_to_cascadeur")
+    row = layout.row(align=False)
+    split = row.split(factor=0.75, align=False)
+
+    # Left side
+    left = split.row()
+    left.prop(
+        addon_props.file_format,
+        "cbb_blender_to_cascadeur",
+    )
+
+    # Right side
+    right = split.row()
+    right.alignment = "RIGHT"
+    right.alert = True
+    right.operator(
+        "cbb.reset_fbx_settings",
+        text="Reset Settings",
+        icon="FILE_REFRESH",
+    )
 
     if addon_props.file_format.cbb_blender_to_cascadeur == "fbx":
         _draw_fbx_settings(layout, addon_props)
@@ -16,8 +34,6 @@ def draw_blender_to_cascadeur_settings(layout, context):
             text="Not implemented yet.",
             icon="STATUS_WARNING_FILLED",
         )
-
-    _draw_settings_buttons(layout)
 
 
 def _draw_fbx_settings(layout, addon_props):
@@ -159,16 +175,6 @@ def _draw_blender_animation(layout, addon_props):
         col.prop(settings, "cbb_bake_anim_force_startend_keying")
         col.prop(settings, "cbb_bake_anim_step")
         col.prop(settings, "cbb_bake_anim_simplify_factor")
-
-
-def _draw_settings_buttons(layout):
-    layout.separator()
-    row = layout.row(align=True)
-    row.operator(
-        "cbb.reset_fbx_settings",
-        text="Reset Settings",
-        icon="FILE_REFRESH",
-    )
 
 
 def _draw_cascadeur_import(layout, addon_props):

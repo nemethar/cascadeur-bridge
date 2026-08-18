@@ -120,12 +120,89 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
 
 
 class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
-    cbb_import_global_scale: bpy.props.FloatProperty(
+    ###########
+    # Include #
+    ###########
+    cbb_use_custom_normals: bpy.props.BoolProperty(
+        name="Custom Normals",
+        description="Import custom normals, if available",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_custom_normals",
+            bool,
+            fallback=True,
+        ),
+    )
+
+    cbb_use_subsurf: bpy.props.BoolProperty(
+        name="Subdivision Data",
+        description="Import FBX subdivision information as subdivision surface modifiers",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_subsurf",
+            bool,
+            fallback=False,
+        ),
+    )
+
+    cbb_use_custom_props: bpy.props.BoolProperty(
+        name="Custom Properties",
+        description="Import user properties as custom properties",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_custom_props",
+            bool,
+            fallback=True,
+        ),
+    )
+
+    cbb_use_custom_props_enum_as_string: bpy.props.BoolProperty(
+        name="Import Enums As Strings",
+        description="Store enumeration values as strings",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_custom_props_enum_as_string",
+            bool,
+            fallback=True,
+        ),
+    )
+
+    cbb_use_image_search: bpy.props.BoolProperty(
+        name="Image Search",
+        description="Search subdirs for any associated images (WARNING: may be slow)",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_image_search",
+            bool,
+            fallback=True,
+        ),
+    )
+
+    cbb_colors_type: bpy.props.EnumProperty(
+        name="Vertex Colors",
+        items=(
+            ("NONE", "None", "Do not import color attributes."),
+            ("SRGB", "sRGB", "Expect file colors in sRGB color space."),
+            ("LINEAR", "Linear", "Expect file colors in linear color space."),
+        ),
+        description="Import vertex color attributes",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_colors_type",
+            set,
+            fallback="SRGB",
+        ),
+    )
+
+    #############
+    # Transform #
+    #############
+    cbb_global_scale: bpy.props.FloatProperty(
         name="Global Scale",
         description="Scale",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_global_scale",
+            "cbb_global_scale",
             float,
             fallback=1.0,
         ),
@@ -133,139 +210,184 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         max=1000,
     )
 
-    cbb_import_apply_transform: bpy.props.BoolProperty(
+    cbb_decal_offset: bpy.props.FloatProperty(
+        name="Decal Offset",
+        description="Displace geometry of alpha meshes",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_decal_offset",
+            float,
+            fallback=1.0,
+        ),
+        min=0.0,
+        max=1.0,
+    )
+
+    cbb_bake_space_transform: bpy.props.BoolProperty(
         name="Apply Transform",
         description="Bake space transform into object data. EXPERIMENTAL!",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_apply_transform",
+            "cbb_bake_space_transform",
             bool,
             fallback=False,
         ),
     )
 
-    cbb_import_manual_orientation: bpy.props.BoolProperty(
-        name="Use Manual Orientation",
+    cbb_use_prepost_rot: bpy.props.BoolProperty(
+        name="Use Pre/Post Rotation",
+        description="Use pre/post rotation from FBX transform",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_use_prepost_rot",
+            bool,
+            fallback=True,
+        ),
+    )
+
+    cbb_use_manual_orientation: bpy.props.BoolProperty(
+        name="Manual Orientation",
         description="Specify orientation and scale, instead of using embedded data in FBX file",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_manual_orientation",
+            "cbb_use_manual_orientation",
             bool,
             fallback=False,
         ),
     )
 
-    cbb_import_axis_forward: bpy.props.EnumProperty(
+    cbb_axis_forward: bpy.props.EnumProperty(
         items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Forward",
         description="Forward Axis",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_axis_forward",
+            "cbb_axis_forward",
             str,
             fallback="-Z",
         ),
     )
 
-    cbb_import_axis_up: bpy.props.EnumProperty(
+    cbb_axis_up: bpy.props.EnumProperty(
         items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Up",
         description="Forward Up",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_axis_up",
+            "cbb_axis_up",
             str,
             fallback="Y",
         ),
     )
 
-    cbb_import_use_anim: bpy.props.BoolProperty(
+    #############
+    # Materials #
+    #############
+    cbb_mtl_name_collision_mode: bpy.props.EnumProperty(
+        name="Vertex Colors",
+        items=(
+            (
+                "MAKE_UNIQUE",
+                "Make Unique",
+                "Import each FBX material as a unique Blender material.",
+            ),
+            (
+                "REFERENCE_EXISTING",
+                "Reference Existing",
+                "If a material with the same name already exists, reference that instead of importing.",
+            ),
+        ),
+        description="Import vertex color attributes",
+        default=config_handling.get_config_parameter(
+            "FBX Settings",
+            "cbb_colors_type",
+            set,
+            fallback="REFERENCE_EXISTING",
+        ),
+    )
+
+    #############
+    # Animation #
+    #############
+    cbb_use_anim: bpy.props.BoolProperty(
         name="Import Animation",
         description="Import FBX animation",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_use_anim",
+            "cbb_use_anim",
             bool,
             fallback=True,
         ),
     )
 
-    cbb_import_anim_offset: bpy.props.FloatProperty(
+    cbb_anim_offset: bpy.props.FloatProperty(
         name="Animation Offset",
         description=" Offset to apply to animation during import, in frames",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_anim_offset",
+            "cbb_anim_offset",
             float,
             fallback=1.0,
         ),
     )
 
-    cbb_import_ignore_leaf_bones: bpy.props.BoolProperty(
+    ############
+    # Armature #
+    ############
+    cbb_ignore_leaf_bones: bpy.props.BoolProperty(
         name="Ignore Leaf Bones",
         description="Ignore the last bone at the end of each chain",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_ignore_leaf_bones",
+            "cbb_ignore_leaf_bones",
             bool,
             fallback=False,
         ),
     )
 
-    cbb_import_force_connect_children: bpy.props.BoolProperty(
+    cbb_force_connect_children: bpy.props.BoolProperty(
         name="Force Connect Children",
         description="Force connection of children bones to their parent",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_force_connect_children",
+            "cbb_force_connect_children",
             bool,
             fallback=False,
         ),
     )
 
-    cbb_import_automatic_bone_orientation: bpy.props.BoolProperty(
+    cbb_automatic_bone_orientation: bpy.props.BoolProperty(
         name="Automatic Bone Orientation",
         description="Try to align the major bone axis with the bone children",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_automatic_bone_orientation",
+            "cbb_automatic_bone_orientation",
             bool,
             fallback=False,
         ),
     )
 
-    cbb_import_primary_bone_axis: bpy.props.EnumProperty(
+    cbb_primary_bone_axis: bpy.props.EnumProperty(
         items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Primary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_primary_bone_axis",
+            "cbb_primary_bone_axis",
             str,
             fallback="Y",
         ),
     )
 
-    cbb_import_secondary_bone_axis: bpy.props.EnumProperty(
+    cbb_secondary_bone_axis: bpy.props.EnumProperty(
         items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Secondary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
             "FBX Settings",
-            "cbb_import_secondary_bone_axis",
+            "cbb_secondary_bone_axis",
             str,
             fallback="X",
-        ),
-    )
-
-    cbb_import_use_prepost_rot: bpy.props.BoolProperty(
-        name="Use Pre/Post Rotation",
-        description="Use pre/post rotation from FBX transform",
-        default=config_handling.get_config_parameter(
-            "FBX Settings",
-            "cbb_import_use_prepost_rot",
-            bool,
-            fallback=True,
         ),
     )
 
@@ -631,7 +753,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         ),
     )
 
-    armature_nodetype: bpy.props.EnumProperty(
+    cbb_armature_nodetype: bpy.props.EnumProperty(
         items=(
             (
                 "NULL",

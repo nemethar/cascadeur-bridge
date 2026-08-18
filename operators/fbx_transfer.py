@@ -19,22 +19,32 @@ def import_fbx(file_path: str) -> list:
     import_props = bpy.context.scene.cbb_settings.blender_fbx_import
     bpy.ops.import_scene.fbx(
         filepath=file_path,
+        # Include
+        use_custom_normals=import_props.cbb_use_custom_normals,
+        use_subsurf=import_props.cbb_use_subsurf,
+        use_custom_props=import_props.cbb_use_custom_props,
+        use_custom_props_enum_as_string=import_props.cbb_use_custom_props_enum_as_string,
+        use_image_search=import_props.cbb_use_image_search,
+        colors_type=import_props.cbb_colors_type,
         # Transform
-        global_scale=import_props.cbb_import_global_scale,
-        bake_space_transform=import_props.cbb_import_apply_transform,
-        use_manual_orientation=import_props.cbb_import_manual_orientation,
-        axis_forward=import_props.cbb_import_axis_forward,
-        axis_up=import_props.cbb_import_axis_up,
+        global_scale=import_props.cbb_global_scale,
+        decal_offset=import_props.cbb_decal_offset,
+        bake_space_transform=import_props.cbb_bake_space_transform,
+        use_prepost_rot=import_props.cbb_use_prepost_rot,
+        use_manual_orientation=import_props.cbb_use_manual_orientation,
+        axis_forward=import_props.cbb_axis_forward,
+        axis_up=import_props.cbb_axis_up,
+        # Materials
+        mtl_name_collision_mode=import_props.cbb_mtl_name_collision_mode,
         # Animation
-        use_anim=import_props.cbb_import_use_anim,
-        anim_offset=import_props.cbb_import_anim_offset,
+        use_anim=import_props.cbb_use_anim,
+        anim_offset=import_props.cbb_anim_offset,
         # Armature
-        ignore_leaf_bones=import_props.cbb_import_ignore_leaf_bones,
-        force_connect_children=import_props.cbb_import_force_connect_children,
-        automatic_bone_orientation=import_props.cbb_import_automatic_bone_orientation,
-        primary_bone_axis=import_props.cbb_import_primary_bone_axis,
-        secondary_bone_axis=import_props.cbb_import_secondary_bone_axis,
-        use_prepost_rot=import_props.cbb_import_use_prepost_rot,
+        ignore_leaf_bones=import_props.cbb_ignore_leaf_bones,
+        force_connect_children=import_props.cbb_force_connect_children,
+        automatic_bone_orientation=import_props.cbb_automatic_bone_orientation,
+        primary_bone_axis=import_props.cbb_primary_bone_axis,
+        secondary_bone_axis=import_props.cbb_secondary_bone_axis,
     )
     # Return the list of imported objects
     return bpy.context.selected_objects
