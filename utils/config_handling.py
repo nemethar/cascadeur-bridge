@@ -94,39 +94,59 @@ def save_fbx_settings() -> None:
     Saving fbx settings set on the N panel to the settings.cfg file.
     """
     config = get_config()
-    section = "FBX Settings"
-    if not config.has_section(section):
-        config.add_section(section)
 
     addon_props = bpy.context.scene.cbb_settings
 
-    for attr_name, _ in addon_props.rna_type.properties.items():
-        if attr_name == "cbb_port":
+    for group_name, _ in addon_props.rna_type.properties.items():
+        if group_name in {"rna_type", "name", "network"}:
             continue
-        if attr_name not in ["rna_type", "name"]:
-            config.set(section, attr_name, str(getattr(addon_props, attr_name)))
+        section: str = group_name.replace("_", " ").capitalize()
+
+        if not config.has_section(section):
+            config.add_section(section)
+
+        group = getattr(addon_props, group_name)
+
+        for property_name, _ in group.rna_type.properties.items():
+            if property_name in {"rna_type", "name"}:
+                continue
+
+            value = getattr(group, property_name)
+            config.set(section, property_name, str(value))
 
     with open(config_path, "w") as configfile:
         config.write(configfile)
 
 
-def reset_fbx_settings() -> None:
-    """
-    Remove the FBX Settings section from the config file if it exists
-    """
+def reset_settings(groups: list[str] = None) -> None:
     config = get_config()
-    section = "FBX Settings"
-    # Remove FBX Settings section from config file
-    if config.has_section(section):
-        config.remove_section(section)
-        with open(config_path, "w") as config_file:
-            config.write(config_file)
-
     addon_props = bpy.context.scene.cbb_settings
-    # Reset properties to their default values
-    for prop_name, _ in addon_props.rna_type.properties.items():
-        if prop_name not in ["rna_type", "name"]:
-            addon_props.property_unset(prop_name)
+
+    for group_name, _ in addon_props.rna_type.properties.items():
+        if group_name in {"rna_type", "name", "network"}:
+            continue
+
+        if groups is not None and group_name not in groups:
+            continue
+
+        section = group_name.replace("_", " ").capitalize()
+
+        # Remove the section from the config
+        if config.has_section(section):
+            config.remove_section(section)
+
+        # Reset all properties in this group
+        group = getattr(addon_props, group_name)
+
+        for property_name, _ in group.rna_type.properties.items():
+            if property_name in {"rna_type", "name"}:
+                continue
+
+            group.property_unset(property_name)
+
+    # Save the modified config once
+    with open(config_path, "w") as config_file:
+        config.write(config_file)
 
 
 def save_port_number() -> bool:

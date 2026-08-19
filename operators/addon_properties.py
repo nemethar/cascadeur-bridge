@@ -17,14 +17,24 @@ class CBB_PG_file_format_settings(bpy.types.PropertyGroup):
         items=generate_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Cascadeur to Blender transfer",
-        default="fbx",
+        default=config_handling.get_config_parameter(
+            "File format",
+            "cbb_cascadeur_to_blender",
+            str,
+            fallback="fbx",
+        ),
     )
 
     cbb_blender_to_cascadeur: bpy.props.EnumProperty(
         items=generate_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Blender to Cascadeur transfer",
-        default="fbx",
+        default=config_handling.get_config_parameter(
+            "File format",
+            "cbb_blender_to_cascadeur",
+            str,
+            fallback="fbx",
+        ),
     )
 
 
@@ -42,7 +52,7 @@ class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
         ),
         description="Method to use when exporting from Cascadeur",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx import",
             "cbb_import_methods",
             str,
             fallback="import_model",
@@ -66,7 +76,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
         ),
         description="Method to use when exporting from Cascadeur",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx export",
             "cbb_export_methods",
             str,
             fallback="export_all_objects",
@@ -77,7 +87,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
         name="Selected Interval",
         description="Import selected interval only",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx export",
             "cbb_csc_import_selected",
             bool,
             fallback=False,
@@ -88,7 +98,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
         name="Apply Euler Filter",
         description="Automatically set objects' rotations to lowes possible values",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx export",
             "cbb_csc_apply_euler_filter",
             bool,
             fallback=False,
@@ -100,7 +110,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
         name="Up Axis",
         description="Up Axis when exporting from Cascadeur",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx export",
             "cbb_csc_up_axis",
             str,
             fallback="Y",
@@ -111,7 +121,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
         name="Bake animation",
         description="Key all frames when exporting from Cascadeur",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Cascadeur fbx export",
             "cbb_csc_bake_animation",
             bool,
             fallback=True,
@@ -127,7 +137,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Custom Normals",
         description="Import custom normals, if available",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_custom_normals",
             bool,
             fallback=True,
@@ -138,7 +148,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Subdivision Data",
         description="Import FBX subdivision information as subdivision surface modifiers",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_subsurf",
             bool,
             fallback=False,
@@ -149,7 +159,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Custom Properties",
         description="Import user properties as custom properties",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_custom_props",
             bool,
             fallback=True,
@@ -160,7 +170,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Import Enums As Strings",
         description="Store enumeration values as strings",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_custom_props_enum_as_string",
             bool,
             fallback=True,
@@ -171,7 +181,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Image Search",
         description="Search subdirs for any associated images (WARNING: may be slow)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_image_search",
             bool,
             fallback=True,
@@ -187,9 +197,9 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         ),
         description="Import vertex color attributes",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_colors_type",
-            set,
+            str,
             fallback="SRGB",
         ),
     )
@@ -201,7 +211,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Global Scale",
         description="Scale",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_global_scale",
             float,
             fallback=1.0,
@@ -214,7 +224,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Decal Offset",
         description="Displace geometry of alpha meshes",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_decal_offset",
             float,
             fallback=1.0,
@@ -227,7 +237,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Apply Transform",
         description="Bake space transform into object data. EXPERIMENTAL!",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_bake_space_transform",
             bool,
             fallback=False,
@@ -238,7 +248,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Use Pre/Post Rotation",
         description="Use pre/post rotation from FBX transform",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_prepost_rot",
             bool,
             fallback=True,
@@ -249,7 +259,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Manual Orientation",
         description="Specify orientation and scale, instead of using embedded data in FBX file",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_manual_orientation",
             bool,
             fallback=False,
@@ -261,7 +271,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Forward",
         description="Forward Axis",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_axis_forward",
             str,
             fallback="-Z",
@@ -273,7 +283,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Up",
         description="Forward Up",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_axis_up",
             str,
             fallback="Y",
@@ -299,9 +309,9 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         ),
         description="Import vertex color attributes",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
-            "cbb_colors_type",
-            set,
+            "Blender fbx import",
+            "cbb_mtl_name_collision_mode",
+            str,
             fallback="REFERENCE_EXISTING",
         ),
     )
@@ -313,7 +323,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Import Animation",
         description="Import FBX animation",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_use_anim",
             bool,
             fallback=True,
@@ -324,7 +334,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Animation Offset",
         description=" Offset to apply to animation during import, in frames",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_anim_offset",
             float,
             fallback=1.0,
@@ -338,7 +348,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Ignore Leaf Bones",
         description="Ignore the last bone at the end of each chain",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_ignore_leaf_bones",
             bool,
             fallback=False,
@@ -349,7 +359,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Force Connect Children",
         description="Force connection of children bones to their parent",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_force_connect_children",
             bool,
             fallback=False,
@@ -360,7 +370,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Automatic Bone Orientation",
         description="Try to align the major bone axis with the bone children",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_automatic_bone_orientation",
             bool,
             fallback=False,
@@ -372,7 +382,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Primary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_primary_bone_axis",
             str,
             fallback="Y",
@@ -384,7 +394,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
         name="Secondary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx import",
             "cbb_secondary_bone_axis",
             str,
             fallback="X",
@@ -412,9 +422,9 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         ),
         description="Method used to reference paths.",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_path_mode",
-            set,
+            str,
             fallback="AUTO",
         ),
     )
@@ -423,7 +433,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Embed Textures",
         description="Embed textures in FBX binary file (only for “Copy” path mode!)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_embed_textures",
             bool,
             fallback=False,
@@ -437,7 +447,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Selected Objects",
         description="Export selected and visible objects only",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_selection",
             bool,
             fallback=False,
@@ -448,7 +458,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Visible Objects",
         description="Export visible objects only",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_visible",
             bool,
             fallback=False,
@@ -459,7 +469,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Active Collection",
         description="Export only objects from the active collection (and its children)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_active_collection",
             bool,
             fallback=False,
@@ -483,7 +493,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         ),
         description="Which kind of object to export",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_object_types",
             set,
             fallback={"EMPTY", "CAMERA", "LIGHT", "ARMATURE", "MESH", "OTHER"},
@@ -494,7 +504,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Custom Properties",
         description="Export custom properties",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_custom_props",
             bool,
             fallback=False,
@@ -508,7 +518,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Global Scale",
         description="Scale",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_global_scale",
             float,
             fallback=1.0,
@@ -543,7 +553,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Forward",
         description="Forward Axis",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_apply_scale_options",
             str,
             fallback="FBX_SCALE_NONE",
@@ -555,7 +565,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Forward",
         description="Forward Axis",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_axis_forward",
             str,
             fallback="-Z",
@@ -567,7 +577,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Up",
         description="Forward Up",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_axis_up",
             str,
             fallback="Y",
@@ -578,7 +588,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Apply Unit",
         description="Apply Unit, Take into account current Blender units settings",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_apply_unit_scale",
             bool,
             fallback=True,
@@ -589,7 +599,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Use Space Transform",
         description="Apply global space transform to the object rotations. When disabled only the axis space is written to the file and all object transforms are left as-is",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_space_transform",
             bool,
             fallback=True,
@@ -600,7 +610,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Apply Transform",
         description="Bake space transform into object data. EXPERIMENTAL!",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_apply_transform",
             bool,
             fallback=False,
@@ -637,7 +647,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Smoothing",
         description="Export smoothing information",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_mesh_smooth_type",
             str,
             fallback="OFF",
@@ -648,7 +658,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Export Subdivision Surface",
         description="Export the last Catmull-Rom subdivision modifier as FBX subdivision",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_subsurf",
             bool,
             fallback=False,
@@ -659,7 +669,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Apply Modifiers",
         description="Apply modifiers to mesh objects (except Armature ones) - WARNING: prevents exporting shape keys",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_mesh_modifiers",
             bool,
             fallback=True,
@@ -670,7 +680,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Loose Edges",
         description="Export loose edges (as two-vertices polygons)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_mesh_edges",
             bool,
             fallback=False,
@@ -681,7 +691,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Triangulate Faces",
         description="Convert all faces to triangles",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_triangles",
             bool,
             fallback=False,
@@ -692,7 +702,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Tangent Space",
         description="Add binormal and tangent vectors, together with normal they form the tangent space (will only work correctly with tris/quads only meshes!)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_tspace",
             bool,
             fallback=False,
@@ -708,7 +718,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Vertex Colors",
         description="Export vertex color attributes",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_colors_type",
             str,
             fallback="SRGB",
@@ -719,7 +729,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Prioritize Active Color",
         description="Make sure active color will be exported first. Could be important since some other software can discard other color attributes besides the first one",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_prioritize_active_color",
             bool,
             fallback=False,
@@ -734,7 +744,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Primary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_primary_bone_axis",
             str,
             fallback="Y",
@@ -746,7 +756,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Secondary Bone Axis",
         description="",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_secondary_bone_axis",
             str,
             fallback="X",
@@ -774,7 +784,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Armature FBXNode Type",
         description="FBX type of node (object) used to represent Blender’s armatures (use the Null type unless you experience issues with the other app, as other choices may not import back perfectly into Blender…)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "armature_nodetype",
             str,
             fallback="NULL",
@@ -785,7 +795,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Only Deform Bones",
         description="Only write deforming bones",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_deform_only",
             bool,
             fallback=True,
@@ -796,7 +806,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Add Leaf Bones",
         description="Append a final bone to the end of each chain to specify last bone length",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_leaf_bones",
             bool,
             fallback=False,
@@ -810,7 +820,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Baked Animation",
         description="Export baked keyframe animation",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_bake_anim",
             bool,
             fallback=True,
@@ -821,7 +831,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Key All Bones",
         description="Force exporting at least one key of animation for all bones",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_bake_anim_use_all_bones",
             bool,
             fallback=True,
@@ -832,7 +842,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="NLA Strips",
         description="Export each non-muted NLA strip as a separated FBX’s AnimStack, if any, instead of global scene animation",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_nla_strips",
             bool,
             fallback=False,
@@ -843,7 +853,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="All Actions",
         description="Export each action as a separated FBX’s AnimStack, instead of global scene animation",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_use_all_actions",
             bool,
             fallback=False,
@@ -854,7 +864,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Force Start/End Keying",
         description="Always add a keyframe at start and end of actions for animated channels",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_bake_anim_force_startend_keying",
             bool,
             fallback=True,
@@ -865,7 +875,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Sampling Rate",
         description="How often to evaluate animated values (in frames)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_bake_anim_step",
             float,
             fallback=1.0,
@@ -880,7 +890,7 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
         name="Simplify",
         description="How much to simplify baked values (0.0 to disable, the higher the more simplified)",
         default=config_handling.get_config_parameter(
-            "FBX Settings",
+            "Blender fbx export",
             "cbb_bake_anim_simplify_factor",
             float,
             fallback=1.0,
@@ -996,7 +1006,7 @@ class CBB_OT_reset_fbx_settings(bpy.types.Operator):
 
     def execute(self, context):
         try:
-            config_handling.reset_fbx_settings()
+            config_handling.reset_settings()
             # Update UI panel
             bpy.context.area.tag_redraw()
         except Exception as e:
