@@ -6,14 +6,8 @@ def generate_items(options: list) -> list:
     return [(option, option, "") for option in options]
 
 
-class CBB_PG_file_format_settings(bpy.types.PropertyGroup):
-    cbb_filepath: bpy.props.StringProperty(
-        name="Filepath used for temporarily exporting the file.",
-        subtype="FILE_PATH",
-        default="",
-    )
-
-    cbb_cascadeur_to_blender: bpy.props.EnumProperty(
+class CBB_PG_cascadeur_to_blender(bpy.types.PropertyGroup):
+    cbb_file_format: bpy.props.EnumProperty(
         items=generate_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Cascadeur to Blender transfer",
@@ -25,7 +19,9 @@ class CBB_PG_file_format_settings(bpy.types.PropertyGroup):
         ),
     )
 
-    cbb_blender_to_cascadeur: bpy.props.EnumProperty(
+
+class CBB_PG_blender_to_cascadeur(bpy.types.PropertyGroup):
+    cbb_file_format: bpy.props.EnumProperty(
         items=generate_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Blender to Cascadeur transfer",
@@ -57,7 +53,7 @@ class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
             str,
             fallback="import_model",
         ),
-    )  # type: ignore
+    )
 
 
 class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
@@ -81,7 +77,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
             str,
             fallback="export_all_objects",
         ),
-    )  # type: ignore
+    )
 
     cbb_csc_import_selected: bpy.props.BoolProperty(
         name="Selected Interval",
@@ -918,8 +914,12 @@ class CBB_PG_networking_settings(bpy.types.PropertyGroup):
 
 
 class CBB_PG_settings(bpy.types.PropertyGroup):
-    file_format: bpy.props.PointerProperty(
-        type=CBB_PG_file_format_settings,
+    cascadeur_to_blender: bpy.props.PointerProperty(
+        type=CBB_PG_cascadeur_to_blender,
+    )
+
+    blender_to_cascadeur: bpy.props.PointerProperty(
+        type=CBB_PG_blender_to_cascadeur,
     )
 
     cascadeur_fbx_import: bpy.props.PointerProperty(
@@ -944,13 +944,14 @@ class CBB_PG_settings(bpy.types.PropertyGroup):
 
 
 PROPERTY_GROUPS = (
-    CBB_PG_file_format_settings,
+    CBB_PG_cascadeur_to_blender,
+    CBB_PG_blender_to_cascadeur,
     CBB_PG_cascadeur_fbx_import_settings,
     CBB_PG_cascadeur_fbx_export_settings,
     CBB_PG_blender_fbx_import_settings,
     CBB_PG_blender_fbx_export_settings,
     CBB_PG_networking_settings,
-    # Parent property group. Should be registered last!
+    # Parent property group. Should be registered last:
     CBB_PG_settings,
 )
 
@@ -980,56 +981,3 @@ def get_csc_export_settings() -> dict:
     settings["bake_animation"] = addon_props.cbb_csc_bake_animation
     settings["export_method"] = addon_props.cbb_export_methods
     return settings
-
-
-class CBB_OT_save_fbx_settings(bpy.types.Operator):
-    """Save fbx import and export settings for Cascadeur and Blender"""
-
-    bl_idname = "cbb.save_fbx_settings"
-    bl_label = "Save Settings for CSC Bridge"
-
-    def execute(self, context):
-        try:
-            config_handling.save_fbx_settings()
-        except Exception as e:
-            self.report({"ERROR", f"Couldn't save settings: {e}"})
-            return {"CANCELLED"}
-        self.report({"INFO"}, "Settings saved")
-        return {"FINISHED"}
-
-
-class CBB_OT_reset_fbx_settings(bpy.types.Operator):
-    """Reset fbx import and export settings for Cascadeur and Blender"""
-
-    bl_idname = "cbb.reset_fbx_settings"
-    bl_label = "Reset FBX Settings of CSC Bridge"
-
-    def execute(self, context):
-        try:
-            config_handling.reset_settings()
-            # Update UI panel
-            bpy.context.area.tag_redraw()
-        except Exception as e:
-            self.report({"ERROR", f"Couldn't save settings: {e}"})
-            return {"CANCELLED"}
-        self.report({"INFO"}, "Settings reset")
-        return {"FINISHED"}
-
-
-class CBB_OT_save_port_number(bpy.types.Operator):
-    """Save port settings for Cascadeur and Blender"""
-
-    bl_idname = "cbb.save_port_settings"
-    bl_label = "Save Port"
-
-    def execute(self, context):
-        result = config_handling.save_port_number()
-
-        if not result:
-            self.report(
-                {"ERROR"}, "You don't have permission to write the config file."
-            )
-            self.report({"INFO"}, "Restart Blender as Admin and try again")
-            return {"CANCELLED"}
-        self.report({"INFO"}, "Settings saved")
-        return {"FINISHED"}

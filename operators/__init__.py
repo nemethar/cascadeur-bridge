@@ -22,7 +22,6 @@ classes = [
     preferences.CBB_OT_open_preferences,
     settings.CBB_OT_cascadeur_to_blender_settings,
     settings.CBB_OT_blender_to_cascadeur_settings,
-    addon_properties.CBB_OT_save_fbx_settings,
-    addon_properties.CBB_OT_reset_fbx_settings,
-    addon_properties.CBB_OT_save_port_number,
+    settings.CBB_OT_reset_settings,
+    settings.CBB_OT_save_port_number,
 ]

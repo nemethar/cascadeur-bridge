@@ -89,36 +89,57 @@ def get_panel_name() -> str:
     return get_config_parameter("Addon Settings", "panel_name", fallback="CSC Bridge")
 
 
-def save_fbx_settings() -> None:
+def save_settings(groups: list[str] = None) -> None:
     """
-    Saving fbx settings set on the N panel to the settings.cfg file.
+    Save settings from the specified property groups to the settings.cfg file.
+    If groups is None, all property groups are saved.
+
+    :param list[str] groups: Names of the property groups to save, defaults to None
+    :return bool: True if settings were saved successfully, otherwise False
     """
-    config = get_config()
+    try:
+        config = get_config()
+        addon_props = bpy.context.scene.cbb_settings
 
-    addon_props = bpy.context.scene.cbb_settings
-
-    for group_name, _ in addon_props.rna_type.properties.items():
-        if group_name in {"rna_type", "name", "network"}:
-            continue
-        section: str = group_name.replace("_", " ").capitalize()
-
-        if not config.has_section(section):
-            config.add_section(section)
-
-        group = getattr(addon_props, group_name)
-
-        for property_name, _ in group.rna_type.properties.items():
-            if property_name in {"rna_type", "name"}:
+        for group_name, _ in addon_props.rna_type.properties.items():
+            if group_name in {"rna_type", "name", "network"}:
                 continue
 
-            value = getattr(group, property_name)
-            config.set(section, property_name, str(value))
+            # Filtering
+            if groups is not None and group_name not in groups:
+                continue
 
-    with open(config_path, "w") as configfile:
-        config.write(configfile)
+            section: str = group_name.replace("_", " ").capitalize()
+
+            if not config.has_section(section):
+                config.add_section(section)
+
+            group = getattr(addon_props, group_name)
+
+            for property_name, _ in group.rna_type.properties.items():
+                if property_name in {"rna_type", "name"}:
+                    continue
+
+                value = getattr(group, property_name)
+                config.set(section, property_name, str(value))
+
+        with open(config_path, "w") as configfile:
+            config.write(configfile)
+        return True
+    except Exception as e:
+        print(f"Failed to save settings: {e}")
+        return False
 
 
 def reset_settings(groups: list[str] = None) -> None:
+    """
+    Reset the specified property groups to their default values and remove
+    their corresponding sections from the settings.cfg file.
+
+    If groups is None, all property groups are reset.
+
+    :param list[str] groups: Names of the property groups to reset, defaults to None
+    """
     config = get_config()
     addon_props = bpy.context.scene.cbb_settings
 
@@ -126,6 +147,7 @@ def reset_settings(groups: list[str] = None) -> None:
         if group_name in {"rna_type", "name", "network"}:
             continue
 
+        # Filtering
         if groups is not None and group_name not in groups:
             continue
 

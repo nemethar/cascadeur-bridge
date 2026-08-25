@@ -11,24 +11,25 @@ def draw_blender_to_cascadeur_settings(layout, context):
     # Left side
     left = split.row()
     left.prop(
-        addon_props.file_format,
-        "cbb_blender_to_cascadeur",
+        addon_props.blender_to_cascadeur,
+        "cbb_file_format",
     )
 
     # Right side
     right = split.row()
     right.alignment = "RIGHT"
     right.alert = True
-    right.operator(
-        "cbb.reset_fbx_settings",
+    props = right.operator(
+        "cbb.reset_settings",
         text="Reset Settings",
         icon="FILE_REFRESH",
     )
+    props.reset_group = "BLENDER_TO_CASCADEUR"
 
-    if addon_props.file_format.cbb_blender_to_cascadeur == "fbx":
+    if addon_props.blender_to_cascadeur.cbb_file_format == "fbx":
         _draw_fbx_settings(layout, addon_props)
 
-    elif addon_props.file_format.cbb_blender_to_cascadeur == "glb":
+    elif addon_props.blender_to_cascadeur.cbb_file_format == "glb":
         row = layout.row(align=True)
         row.label(
             text="Not implemented yet.",
