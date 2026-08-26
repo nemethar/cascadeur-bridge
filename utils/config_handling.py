@@ -89,50 +89,92 @@ def get_panel_name() -> str:
     return get_config_parameter("Addon Settings", "panel_name", fallback="CSC Bridge")
 
 
-def save_fbx_settings() -> None:
+def save_settings(groups: list[str] = None) -> None:
     """
-    Saving fbx settings set on the N panel to the settings.cfg file.
+    Save settings from the specified property groups to the settings.cfg file.
+    If groups is None, all property groups are saved.
+
+    :param list[str] groups: Names of the property groups to save, defaults to None
+    :return bool: True if settings were saved successfully, otherwise False
+    """
+    try:
+        config = get_config()
+        addon_props = bpy.context.scene.cbb_settings
+
+        for group_name, _ in addon_props.rna_type.properties.items():
+            if group_name in {"rna_type", "name", "network"}:
+                continue
+
+            # Filtering
+            if groups is not None and group_name not in groups:
+                continue
+
+            section: str = group_name.replace("_", " ").capitalize()
+
+            if not config.has_section(section):
+                config.add_section(section)
+
+            group = getattr(addon_props, group_name)
+
+            for property_name, _ in group.rna_type.properties.items():
+                if property_name in {"rna_type", "name"}:
+                    continue
+
+                value = getattr(group, property_name)
+                config.set(section, property_name, str(value))
+
+        with open(config_path, "w") as configfile:
+            config.write(configfile)
+        return True
+    except Exception as e:
+        print(f"Failed to save settings: {e}")
+        return False
+
+
+def reset_settings(groups: list[str] = None) -> None:
+    """
+    Reset the specified property groups to their default values and remove
+    their corresponding sections from the settings.cfg file.
+
+    If groups is None, all property groups are reset.
+
+    :param list[str] groups: Names of the property groups to reset, defaults to None
     """
     config = get_config()
-    section = "FBX Settings"
-    if not config.has_section(section):
-        config.add_section(section)
+    addon_props = bpy.context.scene.cbb_settings
 
-    my_group = bpy.context.scene.cbb_fbx_settings
-
-    for attr_name, _ in my_group.rna_type.properties.items():
-        if attr_name == "cbb_port":
+    for group_name, _ in addon_props.rna_type.properties.items():
+        if group_name in {"rna_type", "name", "network"}:
             continue
-        if attr_name not in ["rna_type", "name"]:
-            config.set(section, attr_name, str(getattr(my_group, attr_name)))
 
-    with open(config_path, "w") as configfile:
-        config.write(configfile)
+        # Filtering
+        if groups is not None and group_name not in groups:
+            continue
 
+        section = group_name.replace("_", " ").capitalize()
 
-def reset_fbx_settings() -> None:
-    """
-    Remove the FBX Settings section from the config file if it exists
-    """
-    config = get_config()
-    section = "FBX Settings"
-    # Remove FBX Settings section from config file
-    if config.has_section(section):
-        config.remove_section(section)
-        with open(config_path, "w") as config_file:
-            config.write(config_file)
+        # Remove the section from the config
+        if config.has_section(section):
+            config.remove_section(section)
 
-    cbb_props = bpy.context.scene.cbb_fbx_settings
-    # Reset properties to their default values
-    for prop_name, _ in cbb_props.rna_type.properties.items():
-        if prop_name not in ["rna_type", "name"]:
-            cbb_props.property_unset(prop_name)
+        # Reset all properties in this group
+        group = getattr(addon_props, group_name)
+
+        for property_name, _ in group.rna_type.properties.items():
+            if property_name in {"rna_type", "name"}:
+                continue
+
+            group.property_unset(property_name)
+
+    # Save the modified config once
+    with open(config_path, "w") as config_file:
+        config.write(config_file)
 
 
 def save_port_number() -> bool:
     section = "Addon Settings"
-    addon_props = bpy.context.scene.cbb_fbx_settings
-    port_number = addon_props.cbb_port
+    addon_props = bpy.context.scene.cbb_settings
+    port_number = addon_props.network.cbb_port
 
     # Cascadeur config
     ch = CascadeurHandler()

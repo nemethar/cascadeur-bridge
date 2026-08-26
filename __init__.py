@@ -1,11 +1,13 @@
 if "bpy" not in locals():
     from . import operators
     from . import ui
+    from . import icons
 else:
     import importlib
 
     importlib.reload(operators)
     importlib.reload(ui)
+    importlib.reload(icons)
 
 import bpy
 import os
@@ -147,12 +149,14 @@ classes = [CBB_preferences] + operators.classes + ui.classes
 
 
 def register():
+    icons.register()
     operators.addon_properties.register_props()
     for cls in classes:
         bpy.utils.register_class(cls)
 
 
 def unregister():
+    icons.unregister()
     operators.addon_properties.unregister_props()
     for cls in classes:
         bpy.utils.unregister_class(cls)

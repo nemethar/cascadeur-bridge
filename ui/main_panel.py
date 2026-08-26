@@ -1,4 +1,5 @@
 import bpy
+from .. import icons
 from ..utils.csc_handling import CascadeurHandler
 from ..utils.config_handling import get_panel_name
 from .. import addon_info
@@ -19,7 +20,7 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
 
     def draw(self, context):
         _ch = CascadeurHandler()
-        addon_props = context.scene.cbb_fbx_settings
+        addon_props = context.scene.cbb_settings
         layout = self.layout
 
         if not self._draw_verification(layout, _ch):
@@ -29,7 +30,9 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
             return
 
         self._draw_cascadeur_controls(layout)
+        layout.separator(type="LINE", factor=2)
         self._draw_blender_to_cascadeur(layout, addon_props)
+        layout.separator(type="LINE", factor=2)
         self._draw_cascadeur_to_blender(layout, addon_props)
 
     def _draw_verification(self, layout, cascadeur_handler):
@@ -94,11 +97,13 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
 
         row = col.row()
         row.label(text="Blender > Cascadeur")
+        row.operator(
+            "cbb.blender_to_cascadeur_settings",
+            text="",
+            icon="SETTINGS",
+        )
         row.scale_y = 1.2
-
-        row = col.row()
-        row.prop(addon_props, "cbb_import_methods")
-        row.scale_y = 1.2
+        col.separator(type="LINE")
 
         row = col.row()
         row.operator(
@@ -113,10 +118,13 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
 
         row = col.row()
         row.label(text="Cascadeur > Blender")
+        row.operator(
+            "cbb.cascadeur_to_blender_settings",
+            text="",
+            icon="SETTINGS",
+        )
         row.scale_y = 1.2
-
-        row = col.row()
-        row.prop(addon_props, "cbb_export_methods")
+        col.separator(type="LINE")
 
         self._draw_import_actions(col)
         self._draw_batch_import(col)
