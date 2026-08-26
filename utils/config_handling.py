@@ -3,9 +3,12 @@ import bpy
 import os
 import configparser
 from typing import Any
+import pathlib
 from .csc_handling import CascadeurHandler
+from ..addon_info import PACKAGE_NAME
 
-config_path = os.path.join(os.path.dirname(__file__), "..", "settings.cfg")
+addon_dir = pathlib.Path(bpy.utils.extension_path_user(PACKAGE_NAME, create=True))
+config_path = os.path.join(addon_dir, "settings.cfg")
 
 
 def get_config() -> configparser.ConfigParser:
