@@ -1,11 +1,11 @@
-import bpy
+from bpy.utils import previews
 import os
 
 _preview_collections = {}
 
 
 def register():
-    pcoll = bpy.utils.previews.new()
+    pcoll = previews.new()
 
     icon_path = os.path.join(
         os.path.dirname(__file__),
@@ -19,7 +19,7 @@ def register():
 
 def unregister():
     for pcoll in _preview_collections.values():
-        bpy.utils.previews.remove(pcoll)
+        previews.remove(pcoll)
 
     _preview_collections.clear()
 

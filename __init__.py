@@ -135,14 +135,16 @@ class CBB_preferences(bpy.types.AddonPreferences):
 
         col.separator(type="SPACE", factor=1.5)
 
-        box = col.box()
-        box.label(icon="ASSET_MANAGER", text="Asset Library")
-        row = box.row()
-        row.prop(self, "csc_asset_lib_name", text="Name")
-        row.operator(
-            "cbb.add_cascadeur_asset_library",
-            text="Add Cascadeur Asset Library",
-        )
+        if bpy.app.version >= (5, 2, 0):
+            # Remote asset library settings (only available from Blender 5.2.0)
+            box = col.box()
+            box.label(icon="ASSET_MANAGER", text="Asset Library")
+            row = box.row()
+            row.prop(self, "csc_asset_lib_name", text="Name")
+            row.operator(
+                "cbb.add_cascadeur_asset_library",
+                text="Add Cascadeur Asset Library",
+            )
 
 
 classes = [CBB_preferences] + operators.classes + ui.classes
