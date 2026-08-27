@@ -19,7 +19,7 @@ def get_default_csc_exe_path() -> str:
         "Darwin": r"/Applications/Cascadeur.app",
     }
     default = csc_path.get(platform.system(), "")
-    return default if file_handling.file_exists(default) else ""
+    return default if file_handling.path_exists(default) else ""
 
 
 class CascadeurHandler:
@@ -68,7 +68,7 @@ class CascadeurHandler:
         :return bool: True if file exists, False otherwise.
         """
         csc_path = self.csc_exe_path_addon_preference
-        return True if csc_path and file_handling.file_exists(csc_path) else False
+        return True if csc_path and file_handling.path_exists(csc_path) else False
 
     @property
     def is_csc_bridge_installed(self) -> bool:
@@ -83,7 +83,7 @@ class CascadeurHandler:
         bridge_dir = os.path.join(self.commands_path, "blender_bridge")
 
         return os.path.isdir(bridge_dir) and all(
-            file_handling.file_exists(os.path.join(bridge_dir, filename))
+            file_handling.path_exists(os.path.join(bridge_dir, filename))
             for filename in self.CASCADEUR_BRIDGE_FILES
         )
 

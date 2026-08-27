@@ -12,7 +12,7 @@ else:
 import bpy
 import os
 
-from .utils import config_handling
+from .utils import config_handling, file_handling
 from .utils.csc_handling import get_default_csc_exe_path, CascadeurHandler
 from .addon_info import DEFAULT_ASSET_LIB_NAME
 
@@ -124,12 +124,20 @@ class CBB_preferences(bpy.types.AddonPreferences):
                 text="2. Paste the blender_bridge folder to the Cascadeur scripts folder:"
             )
             row = panel.row()
-            if target_path:
+
+            if not _ch.is_csc_exe_path_valid:
+                row.alert = True
+                row.label(text="Please enter a valid Cascadeur executable path first!")
+            elif not file_handling.path_exists(target_path):
+                row.alert = True
+                row.label(
+                    text="Cascadeur scripts folder not found. "
+                    "Make sure Cascadeur 2026.2 or newer is installed."
+                )
+            else:
                 row.operator("wm.path_open", text="", icon="FILE_FOLDER").filepath = (
                     target_path
                 )
-            else:
-                row.label(text=" Please enter a valid Cascadeur executable path first!")
 
             panel.label(text="3. Restart Cascadeur")
 

@@ -5,13 +5,15 @@ import shutil
 from typing import List
 
 
-def file_exists(file_path: str) -> bool:
+def path_exists(file_path: str) -> bool:
     """
     Checking if file exists.
 
     :param str file_path: Path of the file.
     :return bool: True if the file exsits otherwise False
     """
+    if file_path is None:
+        return False
     return os.path.exists(file_path)
 
 
@@ -21,7 +23,7 @@ def delete_file(file_path: str) -> None:
 
     :param str file_path: Path of the file
     """
-    if file_exists(file_path):
+    if path_exists(file_path):
         os.remove(file_path)
         print(f"{file_path} has been deleted.")
     else:
@@ -62,7 +64,7 @@ def copy_files(
     for file_name in file_list:
         source_path = os.path.join(source_folder, file_name)
         target_path = os.path.join(target_folder, file_name)
-        if not overwrite and file_exists(target_path):
+        if not overwrite and path_exists(target_path):
             continue
         try:
             shutil.copy2(source_path, target_path)
