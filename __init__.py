@@ -153,6 +153,7 @@ def register():
     operators.addon_properties.register_props()
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.app.timers.register(config_handling.load_settings)
 
 
 def unregister():

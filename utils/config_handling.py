@@ -3,9 +3,12 @@ import bpy
 import os
 import configparser
 from typing import Any
+import pathlib
 from .csc_handling import CascadeurHandler
+from ..addon_info import PACKAGE_NAME
 
-config_path = os.path.join(os.path.dirname(__file__), "..", "settings.cfg")
+addon_dir = pathlib.Path(bpy.utils.extension_path_user(PACKAGE_NAME, create=True))
+config_path = os.path.join(addon_dir, "settings.cfg")
 
 
 def get_config() -> configparser.ConfigParser:
@@ -87,6 +90,68 @@ def get_panel_name() -> str:
     :return str: N panel name
     """
     return get_config_parameter("Addon Settings", "panel_name", fallback="CSC Bridge")
+
+
+def load_settings(groups: list[str] = None) -> None:
+    """
+    Load settings from the settings.cfg file into the add-on properties.
+
+    If groups is None, all property groups are loaded.
+
+    :param list[str] groups: Names of the property groups to load, defaults to None
+    """
+    config = get_config()
+    addon_props = bpy.context.scene.cbb_settings
+
+    try:
+        for group_name, _ in addon_props.rna_type.properties.items():
+            if group_name in {"rna_type", "name", "network"}:
+                continue
+
+            if groups is not None and group_name not in groups:
+                continue
+
+            section = group_name.replace("_", " ").capitalize()
+
+            if not config.has_section(section):
+                continue
+
+            group = getattr(addon_props, group_name)
+
+            for property_name, prop in group.rna_type.properties.items():
+                if property_name in {"rna_type", "name"}:
+                    continue
+
+                if not config.has_option(section, property_name):
+                    continue
+
+                if prop.type == "BOOLEAN":
+                    data_type = bool
+                elif prop.type == "INT":
+                    data_type = int
+                elif prop.type == "FLOAT":
+                    data_type = float
+                elif prop.type == "STRING":
+                    data_type = str
+                elif prop.type == "ENUM":
+                    data_type = set if prop.is_enum_flag else str
+                else:
+                    print(
+                        f"Skipping unsupported property "
+                        f"{group_name}.{property_name} ({prop.type})"
+                    )
+                    continue
+
+                value = get_config_parameter(
+                    section,
+                    property_name,
+                    data_type=data_type,
+                    config=config,
+                )
+
+                setattr(group, property_name, value)
+    except Exception as e:
+        print(f"Cascadeur Bridge: Failed to load settings: {e}")
 
 
 def save_settings(groups: list[str] = None) -> None:
