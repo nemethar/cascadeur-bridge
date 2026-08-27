@@ -78,6 +78,8 @@ def set_config_parameter(
     :param str value: Value of the config
     :param configparser.ConfigParser config: ConfigParser object, defaults to get_config()
     """
+    if not config.has_section(section):
+        config.add_section(section)
     config.set(section, parameter, value)
     with open(config_path, "w") as configfile:
         config.write(configfile)
@@ -241,6 +243,8 @@ def save_port_number() -> bool:
     addon_props = bpy.context.scene.cbb_settings
     port_number = addon_props.network.cbb_port
 
+    previous_port = get_config_parameter(section, "port", fallback=53145)
+
     # Cascadeur config
     ch = CascadeurHandler()
     commands_path = os.path.join(ch.commands_path, "blender_bridge", "settings.cfg")
@@ -251,6 +255,7 @@ def save_port_number() -> bool:
         with open(commands_path, "w") as configfile:
             csc_config.write(configfile)
     except PermissionError as e:
+        addon_props.network.cbb_port = previous_port
         return False
     # Blender config
     config = get_config()
