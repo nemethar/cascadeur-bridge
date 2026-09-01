@@ -265,7 +265,7 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
 
         response = self.server_socket.receive_message()
 
-        if response.get("status") != "COMPLETED":
+        if response.get("status") != "completed":
             error_code = response.get("error_code")
             error_message = response.get("message", "No error message.")
 
@@ -319,7 +319,12 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
             self.cleanup(context)
             return {"CANCELLED"}
 
-        if response.get("status") != "COMPLETED":
+        if response.get("error_code") == "LICENSE_REQUIRED":
+            bpy.ops.cbb.license_required_popup("INVOKE_DEFAULT")
+            self.cleanup(context)
+            return {"CANCELLED"}
+
+        if response.get("status") != "completed":
             error = get_cascadeur_error(response)
             if error is not None:
                 self.report({"ERROR"}, error)
@@ -386,7 +391,14 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
             self.cleanup(context)
             return {"CANCELLED"}
 
-        if response.get("status") != "COMPLETED":
+        status = response.get("status")
+
+        if response.get("error_code") == "LICENSE_REQUIRED":
+            bpy.ops.cbb.license_required_popup("INVOKE_DEFAULT")
+            self.cleanup(context)
+            return {"CANCELLED"}
+
+        elif status != "COMPLETED":
             error = get_cascadeur_error(response)
             if error is not None:
                 self.report({"ERROR"}, error)
@@ -436,7 +448,7 @@ def get_cascadeur_error(response: dict) -> str | None:
     if not isinstance(response, dict):
         return f"Unexpected response from Cascadeur: {response}"
 
-    if response.get("status") == "COMPLETED":
+    if response.get("status") == "completed":
         return None
 
     error_code = response.get("error_code")

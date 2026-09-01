@@ -13,7 +13,8 @@ def run(scene):
     from .client_socket import ClientSocket
     from . import commons
 
-    scene_manager = csc.app.get_application().get_scene_manager()
+    app = csc.app.get_application()
+    scene_manager = app.get_scene_manager()
     scenes = scene_manager.scenes()
     client = None
     try:
@@ -27,12 +28,18 @@ def run(scene):
         method_name = message.get("export_method", "export_all_objects")
         export_paths = []
 
+        if not app.is_export_available():
+            client.send_message(
+                {
+                    "status": "error",
+                    "error_code": "LICENSE_REQUIRED",
+                    "message": "Export is not available with the current license.",
+                }
+            )
+
         for s in scenes:
             fbx_scene_loader = (
-                csc.app.get_application()
-                .get_tools_manager()
-                .get_tool("FbxSceneLoader")
-                .get_fbx_loader(s)
+                app.get_tools_manager().get_tool("FbxSceneLoader").get_fbx_loader(s)
             )
             export_path = commons.get_export_path(s.name())
             fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
@@ -47,7 +54,7 @@ def run(scene):
 
         client.send_message(
             {
-                "status": "success",
+                "status": "completed",
                 "files": export_paths,
             }
         )

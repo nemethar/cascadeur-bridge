@@ -4,6 +4,7 @@ if "bpy" not in locals():
     from . import addon_properties
     from . import preferences
     from . import settings
+    from . import free_version_handling
 else:
     import importlib
 
@@ -11,6 +12,8 @@ else:
     importlib.reload(cascadeur)
     importlib.reload(addon_properties)
     importlib.reload(preferences)
+    importlib.reload(settings)
+    importlib.reload(free_version_handling)
 
 classes = [
     fbx_transfer.CBB_OT_export_blender_fbx,
@@ -24,4 +27,6 @@ classes = [
     settings.CBB_OT_blender_to_cascadeur_settings,
     settings.CBB_OT_reset_settings,
     settings.CBB_OT_save_port_number,
+    free_version_handling.CBB_OT_license_required_popup,
+    free_version_handling.CBB_OT_copy_discount_code,
 ]
