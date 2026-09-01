@@ -234,6 +234,9 @@ class OperatorBaseClass(bpy.types.Operator):
             self.server_socket.close()
             self.server_socket = None
 
+        for area in context.screen.areas:
+            area.tag_redraw()
+
 
 class CBB_OT_export_blender_fbx(OperatorBaseClass):
     """Exports the current blender and imports them to Cascadeur"""
@@ -262,7 +265,7 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
 
         response = self.server_socket.receive_message()
 
-        if response.get("status") != "SUCCESS":
+        if response.get("status") != "COMPLETED":
             error_code = response.get("error_code")
             error_message = response.get("message", "No error message.")
 
@@ -316,7 +319,7 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
             self.cleanup(context)
             return {"CANCELLED"}
 
-        if response.get("status") != "success":
+        if response.get("status") != "COMPLETED":
             error = get_cascadeur_error(response)
             if error is not None:
                 self.report({"ERROR"}, error)
@@ -383,7 +386,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
             self.cleanup(context)
             return {"CANCELLED"}
 
-        if response.get("status") != "success":
+        if response.get("status") != "COMPLETED":
             error = get_cascadeur_error(response)
             if error is not None:
                 self.report({"ERROR"}, error)
@@ -433,7 +436,7 @@ def get_cascadeur_error(response: dict) -> str | None:
     if not isinstance(response, dict):
         return f"Unexpected response from Cascadeur: {response}"
 
-    if response.get("status") == "success":
+    if response.get("status") == "COMPLETED":
         return None
 
     error_code = response.get("error_code")
