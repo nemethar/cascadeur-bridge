@@ -25,19 +25,40 @@ def run(scene):
     client = None
     try:
         client = ClientSocket()
+    except Exception as e:
+        scene.error(f"Couldn't connect to Blender. Error: {e}")
+        return
+    try:
+        message: dict = client.receive_message()
+        settings_dict: dict = message.get("export_settings")
 
-        settings_dict: dict = client.receive_message()
+        fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
 
-        fbx_scene_loader.set_settings(commons.set_export_settings(settings_dict))
-
-        method_name = settings_dict.get("export_method", "export_all_objects")
+        method_name = message.get("export_method", "export_all_objects")
         export_method = getattr(fbx_scene_loader, method_name)
         export_method(export_path)
         scene.info(f"File exported to {export_path}")
-        client.send_message([export_path])
+        client.send_message(
+            {
+                "status": "success",
+                "files": [export_path],
+            }
+        )
     except Exception as e:
-        scene.error(f"Couldn't create socket. Error: {e}")
-        return
+        scene.error(f"Couldn't export file. Error: {e}")
+
+        try:
+            client.send_message(
+                {
+                    "status": "error",
+                    "error_code": "EXPORT_FAILED",
+                    "message": str(e),
+                }
+            )
+        except Exception:
+            # The connection may have been lost while processing the request.
+            pass
+
     finally:
         if client is not None:
             client.close()

@@ -40,6 +40,31 @@ class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
         default="import_model",
     )
 
+    cbb_csc_import_selected: bpy.props.BoolProperty(
+        name="Selected Interval",
+        description="Import selected interval only",
+        default=False,
+    )
+
+    cbb_csc_apply_euler_filter: bpy.props.BoolProperty(
+        name="Apply Euler Filter",
+        description="Automatically set objects' rotations to lowes possible values",
+        default=False,
+    )
+
+    cbb_csc_up_axis: bpy.props.EnumProperty(
+        items=generate_items(["Y", "Z"]),
+        name="Up Axis",
+        description="Up Axis when exporting from Cascadeur",
+        default="Y",
+    )
+
+    cbb_csc_bake_animation: bpy.props.BoolProperty(
+        name="Bake animation",
+        description="Key all frames when exporting from Cascadeur",
+        default=True,
+    )
+
 
 class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
     cbb_export_methods: bpy.props.EnumProperty(
@@ -61,7 +86,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
 
     cbb_csc_import_selected: bpy.props.BoolProperty(
         name="Selected Interval",
-        description="Import selected interval only",
+        description="Export selected interval only",
         default=False,
     )
 
@@ -652,12 +677,18 @@ def unregister_props():
         bpy.utils.unregister_class(cls)
 
 
-def get_csc_export_settings() -> dict:
+def get_csc_fbx_settings(direction: str) -> dict:
     settings = {}
-    addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_export
+
+    if direction == "export":
+        addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_export
+    elif direction == "import":
+        addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_import
+    else:
+        raise ValueError(f"Invalid FBX direction: {direction}")
+
     settings["selected_interval"] = addon_props.cbb_csc_import_selected
     settings["euler_filter"] = addon_props.cbb_csc_apply_euler_filter
     settings["up_axis"] = addon_props.cbb_csc_up_axis
     settings["bake_animation"] = addon_props.cbb_csc_bake_animation
-    settings["export_method"] = addon_props.cbb_export_methods
     return settings
