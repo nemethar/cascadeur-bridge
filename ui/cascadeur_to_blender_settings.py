@@ -56,6 +56,7 @@ def _draw_cascadeur_export(layout, addon_props):
     row = col.row()
     row.scale_y = 1.2
     row.prop(addon_props.cascadeur_fbx_export, "cbb_export_methods")
+
     col.separator(factor=1.5)
     col.prop(
         addon_props.cascadeur_fbx_export,

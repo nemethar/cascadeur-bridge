@@ -3,7 +3,7 @@ import tempfile
 import os
 
 
-def set_export_settings(preferences: dict = {}) -> csc.fbx.FbxSettings:
+def set_fbx_settings(preferences: dict = {}) -> csc.fbx.FbxSettings:
     """
     Setting the fbx export settings in Cascadeur.
 

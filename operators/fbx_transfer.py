@@ -1,6 +1,6 @@
 import bpy
 
-from .addon_properties import get_csc_export_settings
+from .addon_properties import get_csc_fbx_settings
 from ..utils import file_handling, action_handling
 from ..utils.server_socket import ServerSocket
 from ..utils.csc_handling import CascadeurHandler
@@ -236,7 +236,7 @@ class OperatorBaseClass(bpy.types.Operator):
 
 
 class CBB_OT_export_blender_fbx(OperatorBaseClass):
-    """Exports the selected objects and imports them to Cascadeur"""
+    """Exports the current blender and imports them to Cascadeur"""
 
     bl_idname = "cbb.export_blender_fbx"
     bl_label = "Export to Cascadeur"
@@ -253,14 +253,23 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
         # Tell Cascadeur where the temporary FBX is located.
         self.server_socket.send_message(
             {
+                "file_format": bpy.context.scene.cbb_settings.blender_to_cascadeur.cbb_file_format,
                 "file_path": self.file_path,
                 "import_method": bpy.context.scene.cbb_settings.cascadeur_fbx_import.cbb_import_methods,
+                "import_settings": get_csc_fbx_settings("import"),
             }
         )
 
         response = self.server_socket.receive_message()
 
-        if response != "SUCCESS":
+        if response.get("status") != "SUCCESS":
+            error_code = response.get("error_code")
+            error_message = response.get("message", "No error message.")
+
+            if error_code == "IMPORT_FAILED":
+                self.report({"ERROR"}, f"Import failed: {error_message}")
+            else:
+                self.report({"ERROR"}, f"Operation failed: {error_message}")
             self.cleanup(context)
             return {"CANCELLED"}
 
@@ -290,16 +299,32 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
 
     def on_connected(self, context):
         # Send Blender's export settings to Cascadeur
-        self.server_socket.send_message(get_csc_export_settings())
+        self.server_socket.send_message(
+            {
+                "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
+                "file_path": None,
+                "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
+                "export_settings": get_csc_fbx_settings("export"),
+            }
+        )
 
         # Expect a list of temporary FBX files
-        data = self.server_socket.receive_message()
+        response = self.server_socket.receive_message()
 
-        if not isinstance(data, list):
-            self.report({"ERROR"}, f"Unexpected response: {data}")
+        if not isinstance(response, dict):
+            self.report({"ERROR"}, f"Unexpected response from Cascadeur: {response}")
+            self.cleanup(context)
             return {"CANCELLED"}
 
-        for file in data:
+        if response.get("status") != "success":
+            error = get_cascadeur_error(response)
+            if error is not None:
+                self.report({"ERROR"}, error)
+                self.cleanup(context)
+                return {"CANCELLED"}
+
+        files = response.get("files", [])
+        for file in files:
             import_fbx(file)
             file_handling.delete_file(file)
 
@@ -340,16 +365,34 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
         CascadeurHandler().execute_csc_command(f"scripts.blender_bridge.{command}")
 
     def on_connected(self, context):
-        self.server_socket.send_message(get_csc_export_settings())
 
-        data = self.server_socket.receive_message()
+        self.server_socket.send_message(
+            {
+                "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
+                "file_path": None,
+                "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
+                "export_settings": get_csc_fbx_settings("export"),
+            }
+        )
 
-        if not isinstance(data, list):
+        response = self.server_socket.receive_message()
+        print(response)
+
+        if not isinstance(response, dict):
+            self.report({"ERROR"}, f"Unexpected response from Cascadeur: {response}")
             self.cleanup(context)
-            self.report({"ERROR"}, f"Unexpected response: {data}")
             return {"CANCELLED"}
 
-        for file in data:
+        if response.get("status") != "success":
+            error = get_cascadeur_error(response)
+            if error is not None:
+                self.report({"ERROR"}, error)
+                self.cleanup(context)
+                return {"CANCELLED"}
+
+        files = response.get("files", [])
+
+        for file in files:
             # Import the temporary FBX to extract its actions
             objects = import_fbx(file)
             self.imported_objects.extend(objects)
@@ -384,3 +427,25 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
 
         self.report({"INFO"}, "Finished")
         return {"FINISHED"}
+
+
+def get_cascadeur_error(response: dict) -> str | None:
+    if not isinstance(response, dict):
+        return f"Unexpected response from Cascadeur: {response}"
+
+    if response.get("status") == "success":
+        return None
+
+    error_code = response.get("error_code")
+    error_message = response.get("message", "No error message.")
+
+    if error_code == "LICENSE_REQUIRED":
+        return "A Indie/Pro Cascadeur license is required for export."
+    elif error_code == "INVALID_SCENE":
+        return f"Invalid Cascadeur scene: {error_message}"
+    elif error_code == "PATH_NOT_WRITABLE":
+        return f"Export path is not writable: {error_message}"
+    elif error_code == "EXPORT_FAILED":
+        return f"Export failed: {error_message}"
+
+    return f"Cascadeur export failed: {error_message}"

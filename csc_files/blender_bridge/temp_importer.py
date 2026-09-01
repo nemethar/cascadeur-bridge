@@ -12,6 +12,7 @@ def description():
 
 def run(scene):
     from .client_socket import ClientSocket
+    from . import commons
 
     mp = csc.app.get_application()
     scene_pr = mp.get_scene_manager().current_scene()
@@ -21,17 +22,37 @@ def run(scene):
     client = None
     try:
         client = ClientSocket()
+    except Exception as e:
+        scene.error(f"Couldn't connect to Blender. Error: {e}")
+        return
+    try:
         message: dict = client.receive_message()
-        file_path = message.get("file_path")
 
+        file_path = message.get("file_path")
+        settings_dict: dict = message.get("import_settings")
         import_method = getattr(fbx_scene_loader, message.get("import_method"))
+
+        fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
+
         import_method(file_path)
         scene.info(f"File imported from {file_path}")
-        client.send_message("SUCCESS")
+        client.send_message({"status": "SUCCESS"})
 
     except Exception as e:
-        scene.error(f"Couldn't create socket. Error: {e}")
-        return
+        scene.error(f"Couldn't import file. Error: {e}")
+
+        try:
+            client.send_message(
+                {
+                    "status": "ERROR",
+                    "error_code": "IMPORT_FAILED",
+                    "message": str(e),
+                }
+            )
+        except Exception:
+            # The connection may have failed while processing the request.
+            pass
+
     finally:
         if client is not None:
             client.close()

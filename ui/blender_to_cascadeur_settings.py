@@ -184,10 +184,12 @@ def _draw_cascadeur_import(layout, addon_props):
     box.separator(type="LINE", factor=1.2)
 
     col = box.column(align=True)
-    col.prop(addon_props.cascadeur_fbx_import, "cbb_import_methods")
-    col.scale_y = 1.2
+    row = col.row()
+    row.scale_y = 1.2
+    row.prop(addon_props.cascadeur_fbx_import, "cbb_import_methods")
+
     col.separator(factor=1.5)
-    col.label(
-        text="Other import settings are not implemented yet!",
-        icon="STATUS_WARNING_FILLED",
+    col.prop(
+        addon_props.cascadeur_fbx_import,
+        "cbb_csc_up_axis",
     )
