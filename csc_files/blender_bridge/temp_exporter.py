@@ -37,13 +37,18 @@ def run(scene):
         method_name = message.get("export_method", "export_all_objects")
         export_method = getattr(fbx_scene_loader, method_name)
         export_method(export_path)
-        scene.info(f"File exported to {export_path}")
-        client.send_message(
-            {
-                "status": "success",
-                "files": [export_path],
-            }
-        )
+        if commons.path_exists(export_path):
+            scene.info(f"File exported to {export_path}")
+            client.send_message(
+                {
+                    "status": "COMPLETED",
+                    "files": [export_path],
+                }
+            )
+        else:
+            raise FileNotFoundError(
+                f"Export file was not created. Check Cascadeur event logs for more info!"
+            )
     except Exception as e:
         scene.error(f"Couldn't export file. Error: {e}")
 

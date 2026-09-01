@@ -39,7 +39,7 @@ def run(scene):
 
         import_method(file_path)
         scene.info(f"File imported from {file_path}")
-        client.send_message({"status": "SUCCESS"})
+        client.send_message({"status": "COMPLETED"})
 
     except Exception as e:
         scene.error(f"Couldn't import file. Error: {e}")

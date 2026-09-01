@@ -38,3 +38,15 @@ def get_export_path(scene_name: str) -> str:
     temp_dir = tempfile.gettempdir()
     file_name = scene_name.replace(".casc", "") + ".fbx"
     return os.path.join(temp_dir, file_name)
+
+
+def path_exists(file_path: str) -> bool:
+    """
+    Checking if file exists.
+
+    :param str file_path: Path of the file.
+    :return bool: True if the file exsits otherwise False
+    """
+    if file_path is None:
+        return False
+    return os.path.exists(file_path)

@@ -38,6 +38,10 @@ def run(scene):
             fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
             export_method = getattr(fbx_scene_loader, method_name)
             export_method(export_path)
+            if not commons.path_exists(export_path):
+                raise FileNotFoundError(
+                    f"Export file was not created. Check Cascadeur event logs for more info!"
+                )
             export_paths.append(export_path)
             scene.info(f"File exported to {export_path}")
 
