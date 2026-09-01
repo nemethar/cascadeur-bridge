@@ -14,6 +14,9 @@ def run(scene):
     from .client_socket import ClientSocket
     from . import commons
 
+    model_viewer = scene.model_viewer()
+    objects_before_import = set(model_viewer.get_objects())
+
     mp = csc.app.get_application()
     scene_pr = mp.get_scene_manager().current_scene()
     tools_manager = csc.app.get_application().get_tools_manager()
@@ -58,19 +61,20 @@ def run(scene):
             client.close()
 
     if message.get("import_method") == "import_model":
-        model_viewer = scene.model_viewer()
+
         behaviour_viewer = model_viewer.behaviour_viewer()
-        objects = model_viewer.get_objects()
+
+        objects_after_import = set(model_viewer.get_objects())
+        imported_objects = objects_after_import.difference(objects_before_import)
+
         joints = {
             obj
-            for obj in objects
+            for obj in imported_objects
             if not behaviour_viewer.get_behaviour_by_name(obj, "Joint").is_null()
         }
 
         if joints:
             scene.info("Entering rigging mode.")
-            rm_on.run_raw(scene_pr.domain_scene(), [0.0, 0.5, 0.0])
-            rig_tool = tools_manager.get_tool("RiggingToolWindowTool").editor(scene_pr)
-            rig_tool.open_quick_rigging_tool()
+            rm_on.run(scene_pr.domain_scene(), [0.0, 0.5, 0.0])
         else:
-            scene.warning("Cannot enter rigging mode. No joints in the scene.")
+            scene.info("No imported joints. Skipping entering to rigging mode.")
