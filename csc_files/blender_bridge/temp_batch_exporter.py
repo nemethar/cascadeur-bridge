@@ -24,8 +24,6 @@ def run(scene):
         return
     try:
         message: dict = client.receive_message()
-        settings_dict: dict = message.get("export_settings")
-        method_name = message.get("export_method", "export_all_objects")
         export_paths = []
 
         if not app.is_export_available():
@@ -36,19 +34,21 @@ def run(scene):
                     "message": "Export is not available with the current license.",
                 }
             )
+            return
 
         for s in scenes:
-            fbx_scene_loader = (
-                app.get_tools_manager().get_tool("FbxSceneLoader").get_fbx_loader(s)
-            )
             export_path = commons.get_export_path(s.name())
-            fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
-            export_method = getattr(fbx_scene_loader, method_name)
-            export_method(export_path)
+            file_format = message.get("file_format", "fbx")
+
+            if file_format == "fbx":
+                commons.export_fbx(app, s, message, export_path)
+            else:
+                pass
             if not commons.path_exists(export_path):
                 raise FileNotFoundError(
                     f"Export file was not created. Check Cascadeur event logs for more info!"
                 )
+
             export_paths.append(export_path)
             scene.info(f"File exported to {export_path}")
 

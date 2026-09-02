@@ -15,10 +15,6 @@ def run(scene):
 
     app = csc.app.get_application()
     scene_pr = app.get_scene_manager().current_scene()
-    fbx_scene_loader = (
-        app.get_tools_manager().get_tool("FbxSceneLoader").get_fbx_loader(scene_pr)
-    )
-    export_path = commons.get_export_path(scene_pr.name())
     client = None
     try:
         client = ClientSocket()
@@ -27,7 +23,6 @@ def run(scene):
         return
     try:
         message: dict = client.receive_message()
-        settings_dict: dict = message.get("export_settings")
 
         if not app.is_export_available():
             client.send_message(
@@ -37,24 +32,27 @@ def run(scene):
                     "message": "Export is not available with the current license.",
                 }
             )
+            return
 
-        fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
+        export_path = commons.get_export_path(scene_pr.name())
+        file_format = message.get("file_format", "fbx")
 
-        method_name = message.get("export_method", "export_all_objects")
-        export_method = getattr(fbx_scene_loader, method_name)
-        export_method(export_path)
-        if commons.path_exists(export_path):
-            scene.info(f"File exported to {export_path}")
-            client.send_message(
-                {
-                    "status": "completed",
-                    "files": [export_path],
-                }
-            )
+        if file_format == "fbx":
+            commons.export_fbx(app, scene_pr, message, export_path)
         else:
+            pass
+
+        if not commons.path_exists(export_path):
             raise FileNotFoundError(
                 f"Export file was not created. Check Cascadeur event logs for more info!"
             )
+        scene.info(f"File exported to {export_path}")
+        client.send_message(
+            {
+                "status": "completed",
+                "files": [export_path],
+            }
+        )
     except Exception as e:
         scene.error(f"Couldn't export file. Error: {e}")
 

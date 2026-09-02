@@ -17,11 +17,9 @@ def run(scene):
     model_viewer = scene.model_viewer()
     objects_before_import = set(model_viewer.get_objects())
 
-    mp = csc.app.get_application()
-    scene_pr = mp.get_scene_manager().current_scene()
-    tools_manager = csc.app.get_application().get_tools_manager()
+    app = csc.app.get_application()
+    scene_pr = app.get_scene_manager().current_scene()
 
-    fbx_scene_loader = tools_manager.get_tool("FbxSceneLoader").get_fbx_loader(scene_pr)
     client = None
     try:
         client = ClientSocket()
@@ -32,12 +30,13 @@ def run(scene):
         message: dict = client.receive_message()
 
         file_path = message.get("file_path")
-        settings_dict: dict = message.get("import_settings")
-        import_method = getattr(fbx_scene_loader, message.get("import_method"))
+        file_format = message.get("file_format", "fbx")
 
-        fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
+        if file_format == "fbx":
+            commons.import_fbx(app, scene_pr, message, file_path)
+        else:
+            pass
 
-        import_method(file_path)
         scene.info(f"File imported from {file_path}")
         client.send_message({"status": "completed"})
 
@@ -62,18 +61,11 @@ def run(scene):
 
     if message.get("import_method") == "import_model":
 
-        behaviour_viewer = model_viewer.behaviour_viewer()
+        imported_joints = commons.get_imported_joints(
+            model_viewer, objects_before_import
+        )
 
-        objects_after_import = set(model_viewer.get_objects())
-        imported_objects = objects_after_import.difference(objects_before_import)
-
-        joints = {
-            obj
-            for obj in imported_objects
-            if not behaviour_viewer.get_behaviour_by_name(obj, "Joint").is_null()
-        }
-
-        if joints:
+        if imported_joints:
             scene.info("Entering rigging mode.")
             rm_on.run(scene_pr.domain_scene(), [0.0, 0.5, 0.0])
         else:
