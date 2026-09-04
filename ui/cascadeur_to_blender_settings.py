@@ -30,21 +30,20 @@ def draw_cascadeur_to_blender_settings(layout, context):
         _draw_fbx_settings(layout, addon_props)
 
     elif addon_props.cascadeur_to_blender.cbb_file_format == "glb":
-        row = layout.row(align=True)
-        row.label(
-            text="Not implemented yet.",
-            icon="STATUS_WARNING_FILLED",
-        )
+        _draw_glb_settings(layout, addon_props)
+
+
+# FBX
 
 
 def _draw_fbx_settings(layout, addon_props):
     row = layout.row(align=True)
 
-    _draw_cascadeur_export(row.column(align=True), addon_props)
-    _draw_blender_import(row.column(align=True), addon_props)
+    _draw_cascadeur_fbx_export(row.column(align=True), addon_props)
+    _draw_blender_fbx_import(row.column(align=True), addon_props)
 
 
-def _draw_cascadeur_export(layout, addon_props):
+def _draw_cascadeur_fbx_export(layout, addon_props):
     box = layout.box()
     box.label(
         text="Cascadeur Export",
@@ -72,7 +71,7 @@ def _draw_cascadeur_export(layout, addon_props):
     )
 
 
-def _draw_blender_import(layout, addon_props):
+def _draw_blender_fbx_import(layout, addon_props):
     box = layout.box()
     box.label(text="Blender Import", icon="BLENDER")
     box.separator(type="LINE", factor=1.2)
@@ -186,3 +185,65 @@ def _draw_blender_armature(layout, addon_props):
         col.prop(settings, "cbb_automatic_bone_orientation")
         col.prop(settings, "cbb_primary_bone_axis")
         col.prop(settings, "cbb_secondary_bone_axis")
+
+
+# GLB
+
+
+def _draw_glb_settings(layout, addon_props):
+    row = layout.row(align=True)
+
+    _draw_cascadeur_glb_export(row.column(align=True), addon_props)
+    _draw_blender_glb_import(row.column(align=True), addon_props)
+
+
+def _draw_cascadeur_glb_export(layout, addon_props):
+    box = layout.box()
+    box.label(
+        text="Cascadeur Export",
+        icon_value=icons.get_icon_id("cascadeur"),
+    )
+    box.separator(type="LINE", factor=1.2)
+
+    settings = addon_props.cascadeur_glb_export
+
+    # Preset
+    row = box.row(align=True)
+    row.prop(settings, "cbb_preset")
+
+    # Cascadeur import options
+    col = box.column(align=True)
+    col.prop(settings, "cbb_for_selected_interval")
+    col.prop(settings, "cbb_for_selected_objects")
+    col.prop(settings, "cbb_include_animation")
+
+    # Scale factor
+    col = box.column(align=True)
+    col.prop(settings, "cbb_use_scale_factor")
+
+    row = col.row(align=True)
+    row.enabled = settings.cbb_use_scale_factor
+    row.prop(settings, "cbb_scale_factor")
+
+    # Mesh options
+    col = box.column(align=True)
+    col.prop(settings, "cbb_call_process_skinned_mesh")
+    col.prop(settings, "cbb_translate_meshes_primitive_attributes")
+    col.prop(settings, "cbb_rotate_meshes_primitive_attributes")
+    col.prop(settings, "cbb_scale_meshes_primitive_attributes")
+
+
+def _draw_blender_glb_import(layout, addon_props):
+    box = layout.box()
+    box.label(text="Blender Import", icon="BLENDER")
+    box.separator(type="LINE", factor=1.2)
+
+    col = box.column(align=True)
+    row = col.row()
+
+    row.label(
+        text="Not implemented yet.",
+        icon="STATUS_WARNING_FILLED",
+    )
+
+    # _draw_blender_include(box, addon_props)

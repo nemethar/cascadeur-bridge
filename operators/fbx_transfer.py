@@ -1,7 +1,6 @@
 import bpy
 
-from .addon_properties import get_csc_fbx_settings
-from ..utils import file_handling, action_handling
+from ..utils import file_handling, action_handling, properties_handling
 from ..utils.server_socket import ServerSocket
 from ..utils.csc_handling import CascadeurHandler
 from .. import addon_info
@@ -259,7 +258,7 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
                 "file_format": bpy.context.scene.cbb_settings.blender_to_cascadeur.cbb_file_format,
                 "file_path": self.file_path,
                 "import_method": bpy.context.scene.cbb_settings.cascadeur_fbx_import.cbb_import_methods,
-                "import_settings": get_csc_fbx_settings("import"),
+                "import_settings": properties_handling.get_csc_fbx_settings("import"),
             }
         )
 
@@ -307,7 +306,7 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
                 "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
                 "file_path": None,
                 "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
-                "export_settings": get_csc_fbx_settings("export"),
+                "export_settings": properties_handling.get_csc_fbx_settings("export"),
             }
         )
 
@@ -379,7 +378,7 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
                 "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
                 "file_path": None,
                 "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
-                "export_settings": get_csc_fbx_settings("export"),
+                "export_settings": properties_handling.get_csc_fbx_settings("export"),
             }
         )
 
@@ -456,8 +455,6 @@ def get_cascadeur_error(response: dict) -> str | None:
 
     if error_code == "LICENSE_REQUIRED":
         return "A Indie/Pro Cascadeur license is required for export."
-    elif error_code == "INVALID_SCENE":
-        return f"Invalid Cascadeur scene: {error_message}"
     elif error_code == "PATH_NOT_WRITABLE":
         return f"Export path is not writable: {error_message}"
     elif error_code == "EXPORT_FAILED":

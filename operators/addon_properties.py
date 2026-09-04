@@ -1,14 +1,18 @@
 import bpy
-from ..utils import config_handling
+from ..utils.properties_handling import (
+    apply_preset,
+    GLB_EXPORT_PRESETS,
+    GLB_IMPORT_PRESETS,
+)
 
 
-def generate_items(options: list) -> list:
+def generate_enum_items(options: list[str]) -> list[tuple[str, str, str]]:
     return [(option, option, "") for option in options]
 
 
 class CBB_PG_cascadeur_to_blender(bpy.types.PropertyGroup):
     cbb_file_format: bpy.props.EnumProperty(
-        items=generate_items(["fbx", "glb"]),
+        items=generate_enum_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Cascadeur to Blender transfer",
         default="fbx",
@@ -17,7 +21,7 @@ class CBB_PG_cascadeur_to_blender(bpy.types.PropertyGroup):
 
 class CBB_PG_blender_to_cascadeur(bpy.types.PropertyGroup):
     cbb_file_format: bpy.props.EnumProperty(
-        items=generate_items(["fbx", "glb"]),
+        items=generate_enum_items(["fbx", "glb"]),
         name="File Format",
         description="Fileformat used for Blender to Cascadeur transfer",
         default="fbx",
@@ -53,7 +57,7 @@ class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
     )
 
     cbb_csc_up_axis: bpy.props.EnumProperty(
-        items=generate_items(["Y", "Z"]),
+        items=generate_enum_items(["Y", "Z"]),
         name="Up Axis",
         description="Up Axis when exporting from Cascadeur",
         default="Y",
@@ -97,7 +101,7 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
     )
 
     cbb_csc_up_axis: bpy.props.EnumProperty(
-        items=generate_items(["Y", "Z"]),
+        items=generate_enum_items(["Y", "Z"]),
         name="Up Axis",
         description="Up Axis when exporting from Cascadeur",
         default="Y",
@@ -111,6 +115,53 @@ class CBB_PG_cascadeur_fbx_export_settings(bpy.types.PropertyGroup):
 
 
 class CBB_PG_cascadeur_glb_import_settings(bpy.types.PropertyGroup):
+    cbb_preset: bpy.props.EnumProperty(
+        name="Preset",
+        description="GLB import preset",
+        items=[
+            (
+                "MODEL",
+                "Model",
+                "Import model",
+            ),
+            (
+                "SCENE",
+                "Scene",
+                "Import scene",
+            ),
+            (
+                "ADD_MODEL",
+                "Add model",
+                "Add a model",
+            ),
+            (
+                "ADD_MODEL_SELECTED",
+                "Add model to selected",
+                "Add a model to selected joints",
+            ),
+            (
+                "ANIMATION",
+                "Animation",
+                "Import animation",
+            ),
+            (
+                "ANIMATION_SELECTED_FRAMES",
+                "Animation to selected frames",
+                "Import animation to selected frames",
+            ),
+            (
+                "ANIMATION_SELECTED_OBJECTS",
+                "Animation to selected objects",
+                "Import animation to selected objects",
+            ),
+        ],
+        default="MODEL",
+        update=lambda self, context: apply_preset(
+            self,
+            GLB_IMPORT_PRESETS[self.cbb_preset],
+        ),
+    )
+
     cbb_for_selected_interval: bpy.props.BoolProperty(
         name="Selected Interval",
         description="Export or import only the currently selected animation interval",
@@ -177,6 +228,38 @@ class CBB_PG_cascadeur_glb_import_settings(bpy.types.PropertyGroup):
 
 
 class CBB_PG_cascadeur_glb_export_settings(bpy.types.PropertyGroup):
+    cbb_preset: bpy.props.EnumProperty(
+        name="Preset",
+        description="GLB import preset",
+        items=[
+            (
+                "SCENE",
+                "Scene",
+                "Export the whole scene",
+            ),
+            (
+                "ANIMATION",
+                "Animation",
+                "Export the animation data only",
+            ),
+            (
+                "SCENE_SELECTED_OBJECTS",
+                "Selected objects and their animation",
+                "Export every selected object with their animation",
+            ),
+            (
+                "MODEL",
+                "Model",
+                "Export objects without animation data",
+            ),
+        ],
+        default="SCENE",
+        update=lambda self, context: apply_preset(
+            self,
+            GLB_EXPORT_PRESETS[self.cbb_preset],
+        ),
+    )
+
     cbb_for_selected_interval: bpy.props.BoolProperty(
         name="Selected Interval",
         description="Export or import only the currently selected animation interval",
@@ -319,14 +402,14 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
     )
 
     cbb_axis_forward: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Forward",
         description="Forward Axis",
         default="-Z",
     )
 
     cbb_axis_up: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Up",
         description="Forward Up",
         default="Y",
@@ -390,14 +473,14 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
     )
 
     cbb_primary_bone_axis: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Primary Bone Axis",
         description="",
         default="Y",
     )
 
     cbb_secondary_bone_axis: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Secondary Bone Axis",
         description="",
         default="X",
@@ -518,14 +601,14 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
     )
 
     cbb_axis_forward: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Forward",
         description="Forward Axis",
         default="-Z",
     )
 
     cbb_axis_up: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Up",
         description="Forward Up",
         default="Y",
@@ -632,14 +715,14 @@ class CBB_PG_blender_fbx_export_settings(bpy.types.PropertyGroup):
     # Armature #
     ############
     cbb_primary_bone_axis: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Primary Bone Axis",
         description="",
         default="Y",
     )
 
     cbb_secondary_bone_axis: bpy.props.EnumProperty(
-        items=generate_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
+        items=generate_enum_items(["X", "Y", "Z", "-X", "-Y", "-Z"]),
         name="Secondary Bone Axis",
         description="",
         default="X",
@@ -1700,59 +1783,3 @@ def unregister_props():
 
     for cls in reversed(PROPERTY_GROUPS):
         bpy.utils.unregister_class(cls)
-
-
-def get_csc_fbx_settings(direction: str) -> dict:
-    settings = {}
-
-    if direction == "export":
-        addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_export
-    elif direction == "import":
-        addon_props = bpy.context.scene.cbb_settings.cascadeur_fbx_import
-    else:
-        raise ValueError(f"Invalid FBX direction: {direction}")
-
-    settings["selected_interval"] = addon_props.cbb_csc_import_selected
-    settings["euler_filter"] = addon_props.cbb_csc_apply_euler_filter
-    settings["up_axis"] = addon_props.cbb_csc_up_axis
-    settings["bake_animation"] = addon_props.cbb_csc_bake_animation
-    return settings
-
-
-def get_csc_glb_settings(direction: str) -> dict:
-    settings = {}
-
-    if direction == "export":
-        addon_props = bpy.context.scene.cbb_settings.cascadeur_glb_export
-
-        settings["call_process_skinned_mesh"] = (
-            addon_props.cbb_call_process_skinned_mesh
-        )
-        settings["rotate_meshes_primitive_attributes"] = (
-            addon_props.cbb_rotate_meshes_primitive_attributes
-        )
-        settings["scale_meshes_primitive_attributes"] = (
-            addon_props.cbb_scale_meshes_primitive_attributes
-        )
-        settings["translate_meshes_primitive_attributes"] = (
-            addon_props.cbb_translate_meshes_primitive_attributes
-        )
-    elif direction == "import":
-        addon_props = bpy.context.scene.cbb_settings.cascadeur_glb_import
-
-        settings["adjust_meshes_rotation"] = addon_props.cbb_adjust_meshes_rotations
-        settings["ignore_mesh_transform"] = addon_props.cbb_ignore_mesh_transform
-        settings["include_objects"] = addon_props.cbb_include_objects
-        settings["is_update_mode"] = addon_props.cbb_is_update_mode
-        settings["move_meshes_to_root"] = addon_props.cbb_move_meshes_to_root
-    else:
-        raise ValueError(f"Invalid GLB direction: {direction}")
-
-    settings["for_selected_interval"] = addon_props.cbb_for_selected_interval
-    settings["for_selected_objects"] = addon_props.cbb_for_selected_objects
-    settings["include_animation"] = addon_props.cbb_include_animation
-    if addon_props.cbb_use_scale_factor:
-        settings["scale_factor"] = addon_props.cbb_scale_factor
-    else:
-        settings["scale_factor"] = None
-    return settings
