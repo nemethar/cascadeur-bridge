@@ -102,6 +102,163 @@ def export_fbx(file_path: str) -> None:
     )
 
 
+def import_glb(file_path: str) -> list:
+    """
+    Import the provided GLB/GLTF file using the GLB import settings
+    configured in the N panel.
+
+    :param str file_path: GLB/GLTF file path to be imported
+    :return list: List of selected objects in the scene
+    """
+    import_props = bpy.context.scene.cbb_settings.blender_glb_import
+
+    bpy.ops.import_scene.gltf(
+        filepath=file_path,
+        # Lighting
+        export_import_convert_lighting_mode=import_props.cbb_convert_lighting_mode,
+        # Mesh
+        merge_vertices=import_props.cbb_merge_vertices,
+        import_shading=import_props.cbb_import_shading,
+        import_merge_material_slots=import_props.cbb_import_merge_material_slots,
+        import_point_as_pointcloud=import_props.cbb_import_point_as_pointcloud,
+        # Texture
+        import_pack_images=import_props.cbb_import_pack_images,
+        import_webp_texture=import_props.cbb_import_webp_texture,
+        import_unused_materials=import_props.cbb_import_unused_materials,
+        # Bones & Skin
+        bone_heuristic=import_props.cbb_bone_heuristic,
+        guess_original_bind_pose=import_props.cbb_guess_original_bind_pose,
+        disable_bone_shape=import_props.cbb_disable_bone_shape,
+        bone_shape_scale_factor=import_props.cbb_bone_shape_scale_factor,
+        # Pipeline
+        import_scene_as_collection=import_props.cbb_import_scene_as_collection,
+        import_select_created_objects=import_props.cbb_import_select_created_objects,
+        import_scene_extras=import_props.cbb_import_scene_extras,
+    )
+
+    return bpy.context.selected_objects
+
+
+def export_glb(file_path: str) -> None:
+    """
+    Exporting GLB from Blender to the provided path using the settings
+    set on the N panel.
+
+    :param str file_path: Path of the GLB file.
+    """
+    export_props = bpy.context.scene.cbb_settings.blender_glb_export
+
+    bpy.ops.export_scene.gltf(
+        filepath=file_path,
+        # Include
+        use_selection=export_props.cbb_selection,
+        use_visible=export_props.cbb_visible,
+        use_renderable=export_props.cbb_renderable,
+        use_active_collection=export_props.cbb_active_collection,
+        use_active_collection_with_nested=export_props.cbb_active_collection_with_nested,
+        use_active_scene=export_props.cbb_active_scene,
+        export_cameras=export_props.cbb_cameras,
+        export_lights=export_props.cbb_lights,
+        export_extras=export_props.cbb_extras,
+        # Transform
+        export_yup=export_props.cbb_yup,
+        # Data - Scene Graph
+        export_hierarchy_flatten_objs=export_props.cbb_hierarchy_flatten_objs,
+        export_hierarchy_full_collections=export_props.cbb_hierarchy_full_collections,
+        # Data - Mesh
+        export_apply=export_props.cbb_apply,
+        export_texcoords=export_props.cbb_texcoords,
+        export_normals=export_props.cbb_normals,
+        export_tangents=export_props.cbb_tangents,
+        export_attributes=export_props.cbb_attributes,
+        use_mesh_edges=export_props.cbb_mesh_edges,
+        use_mesh_vertices=export_props.cbb_mesh_vertices,
+        export_shared_accessors=export_props.cbb_shared_accessors,
+        # Data - Vertex Colors
+        export_vertex_color=export_props.cbb_vertex_color,
+        export_vertex_color_name=export_props.cbb_vertex_color_name,
+        export_all_vertex_colors=export_props.cbb_all_vertex_colors,
+        export_active_vertex_color_when_no_material=(
+            export_props.cbb_active_vertex_color_when_no_material
+        ),
+        # Data - Materials
+        export_materials=export_props.cbb_materials,
+        export_image_format=export_props.cbb_image_format,
+        export_image_quality=export_props.cbb_image_quality,
+        export_image_add_webp=export_props.cbb_image_add_webp,
+        export_image_webp_fallback=export_props.cbb_image_webp_fallback,
+        export_unused_images=export_props.cbb_unused_images,
+        export_unused_textures=export_props.cbb_unused_textures,
+        # Data - Shape Keys
+        export_morph=export_props.cbb_morph,
+        export_morph_normal=export_props.cbb_morph_normal,
+        export_morph_tangent=export_props.cbb_morph_tangent,
+        # Data - Armature
+        export_rest_position_armature=export_props.cbb_rest_position_armature,
+        export_def_bones=export_props.cbb_def_bones,
+        export_armature_object_remove=export_props.cbb_armature_object_remove,
+        export_hierarchy_flatten_bones=export_props.cbb_hierarchy_flatten_bones,
+        export_leaf_bone=export_props.cbb_leaf_bone,
+        # Data - Skinning
+        export_skins=export_props.cbb_skins,
+        export_influence_nb=export_props.cbb_influence_nb,
+        export_all_influences=export_props.cbb_all_influences,
+        # Lighting
+        export_import_convert_lighting_mode=export_props.cbb_convert_lighting_mode,
+        # Compression - Draco
+        export_draco_mesh_compression_enable=(
+            export_props.cbb_draco_mesh_compression_enable
+        ),
+        export_draco_mesh_compression_level=(
+            export_props.cbb_draco_mesh_compression_level
+        ),
+        export_draco_position_quantization=(
+            export_props.cbb_draco_position_quantization
+        ),
+        export_draco_normal_quantization=(export_props.cbb_draco_normal_quantization),
+        export_draco_texcoord_quantization=(
+            export_props.cbb_draco_texcoord_quantization
+        ),
+        export_draco_color_quantization=(export_props.cbb_draco_color_quantization),
+        export_draco_generic_quantization=(export_props.cbb_draco_generic_quantization),
+        # Compression - Meshopt
+        export_meshopt_compression_enable=(export_props.cbb_meshopt_compression_enable),
+        export_meshopt_extension=export_props.cbb_meshopt_extension,
+        # Animation
+        export_animations=export_props.cbb_animations,
+        export_animation_mode=export_props.cbb_animation_mode,
+        # Animation - Bake & Merge
+        export_bake_animation=export_props.cbb_bake_animation,
+        export_merge_animation=export_props.cbb_merge_animation,
+        # Animation - Rest & Ranges
+        export_current_frame=export_props.cbb_current_frame,
+        export_frame_range=export_props.cbb_frame_range,
+        export_anim_slide_to_zero=export_props.cbb_anim_slide_to_zero,
+        export_negative_frame=export_props.cbb_negative_frame,
+        # Animation - Armature
+        export_anim_single_armature=export_props.cbb_anim_single_armature,
+        export_reset_pose_bones=export_props.cbb_reset_pose_bones,
+        # Animation - Shape Keys
+        export_morph_animation=export_props.cbb_morph_animation,
+        export_morph_reset_sk_data=export_props.cbb_morph_reset_sk_data,
+        # Animation - Sampling
+        export_force_sampling=export_props.cbb_force_sampling,
+        export_frame_step=export_props.cbb_frame_step,
+        export_sampling_interpolation_fallback=(
+            export_props.cbb_sampling_interpolation_fallback
+        ),
+        # Animation - Optimization
+        export_optimize_animation_size=(export_props.cbb_optimize_animation_size),
+        export_optimize_animation_keep_anim_armature=(
+            export_props.cbb_optimize_animation_keep_anim_armature
+        ),
+        export_optimize_animation_keep_anim_object=(
+            export_props.cbb_optimize_animation_keep_anim_object
+        ),
+        export_optimize_disable_viewport=(export_props.cbb_optimize_disable_viewport),
+    )
+
+
 def delete_objects(objects: list) -> None:
     """
     Delete the provided list of objects.
@@ -244,21 +401,37 @@ class CBB_OT_export_blender_fbx(OperatorBaseClass):
     bl_label = "Export to Cascadeur"
 
     def on_execute(self, context):
-        # Export the selected objects to a temporary FBX.
-        self.file_path = file_handling.get_export_path()
-        export_fbx(self.file_path)
+        self.file_format = (
+            context.scene.cbb_settings.blender_to_cascadeur.cbb_file_format
+        )
+        # Export the selected objects to a temporary FBX/GLB.
+        self.file_path = file_handling.get_export_path(self.file_format)
+
+        if self.file_format == "fbx":
+            export_fbx(self.file_path)
+        else:
+            export_glb(self.file_path)
 
         # Ask Cascadeur to start its importer. It will connect back to Blender.
         CascadeurHandler().execute_csc_command("scripts.blender_bridge.temp_importer")
 
     def on_connected(self, context):
-        # Tell Cascadeur where the temporary FBX is located.
+        if self.file_format == "fbx":
+            import_method = (
+                context.scene.cbb_settings.cascadeur_fbx_import.cbb_import_methods
+            )
+            import_settings = properties_handling.get_csc_fbx_settings("import")
+        else:
+            import_method = None
+            import_settings = properties_handling.get_csc_glb_settings("import")
+
+        # Tell Cascadeur where the temporary file is located.
         self.server_socket.send_message(
             {
-                "file_format": bpy.context.scene.cbb_settings.blender_to_cascadeur.cbb_file_format,
+                "file_format": self.file_format,
                 "file_path": self.file_path,
-                "import_method": bpy.context.scene.cbb_settings.cascadeur_fbx_import.cbb_import_methods,
-                "import_settings": properties_handling.get_csc_fbx_settings("import"),
+                "import_method": import_method,
+                "import_settings": import_settings,
             }
         )
 
@@ -300,13 +473,24 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
         CascadeurHandler().execute_csc_command(f"scripts.blender_bridge.{command}")
 
     def on_connected(self, context):
+        file_format = context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format
+
+        if file_format == "fbx":
+            export_method = (
+                context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods
+            )
+            export_settings = properties_handling.get_csc_fbx_settings("export")
+        else:
+            export_method = None
+            export_settings = properties_handling.get_csc_glb_settings("export")
+
         # Send Blender's export settings to Cascadeur
         self.server_socket.send_message(
             {
-                "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
+                "file_format": file_format,
                 "file_path": None,
-                "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
-                "export_settings": properties_handling.get_csc_fbx_settings("export"),
+                "export_method": export_method,
+                "export_settings": export_settings,
             }
         )
 
@@ -332,7 +516,10 @@ class CBB_OT_import_cascadeur_fbx(OperatorBaseClass):
 
         files = response.get("files", [])
         for file in files:
-            import_fbx(file)
+            if file_format == "fbx":
+                import_fbx(file)
+            else:
+                import_glb(file)
             file_handling.delete_file(file)
 
         self.cleanup(context)
@@ -372,13 +559,24 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
         CascadeurHandler().execute_csc_command(f"scripts.blender_bridge.{command}")
 
     def on_connected(self, context):
+        file_format = context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format
 
+        if file_format == "fbx":
+            export_method = (
+                context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods
+            )
+            export_settings = properties_handling.get_csc_fbx_settings("export")
+        else:
+            export_method = None
+            export_settings = properties_handling.get_csc_glb_settings("export")
+
+        # Send Blender's export settings to Cascadeur
         self.server_socket.send_message(
             {
-                "file_format": bpy.context.scene.cbb_settings.cascadeur_to_blender.cbb_file_format,
+                "file_format": file_format,
                 "file_path": None,
-                "export_method": bpy.context.scene.cbb_settings.cascadeur_fbx_export.cbb_export_methods,
-                "export_settings": properties_handling.get_csc_fbx_settings("export"),
+                "export_method": export_method,
+                "export_settings": export_settings,
             }
         )
 
@@ -408,7 +606,10 @@ class CBB_OT_import_action_to_selected(OperatorBaseClass):
 
         for file in files:
             # Import the temporary FBX to extract its actions
-            objects = import_fbx(file)
+            if file_format == "fbx":
+                objects = import_fbx(file)
+            else:
+                objects = import_glb(file)
             self.imported_objects.extend(objects)
 
             # Use the FBX filename as the name of the action

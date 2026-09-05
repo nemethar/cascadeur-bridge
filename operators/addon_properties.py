@@ -183,13 +183,13 @@ class CBB_PG_cascadeur_glb_import_settings(bpy.types.PropertyGroup):
     cbb_use_scale_factor: bpy.props.BoolProperty(
         name="Use Scale Factor",
         description="Apply a custom scale factor during import or export",
-        default=False,
+        default=True,
     )
 
     cbb_scale_factor: bpy.props.FloatProperty(
         name="Scale Factor",
         description="Scale factor applied to mesh and object dimensions",
-        default=1.0,
+        default=100.0,
         soft_min=0.01,
         soft_max=100.0,
         min=0.0001,
@@ -281,13 +281,13 @@ class CBB_PG_cascadeur_glb_export_settings(bpy.types.PropertyGroup):
     cbb_use_scale_factor: bpy.props.BoolProperty(
         name="Use Scale Factor",
         description="Apply a custom scale factor during import or export",
-        default=False,
+        default=True,
     )
 
     cbb_scale_factor: bpy.props.FloatProperty(
         name="Scale Factor",
         description="Scale factor applied to mesh and object dimensions",
-        default=1.0,
+        default=0.01,
         soft_min=0.001,
         soft_max=100.0,
         min=0.0001,
@@ -1167,6 +1167,12 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
         ),
         description="How to export vertex color",
         default="MATERIAL",
+    )
+
+    cbb_vertex_color_name: bpy.props.StringProperty(
+        name="Name",
+        description="Name of the vertex color attribute to export",
+        default="Color",
     )
 
     cbb_all_vertex_colors: bpy.props.BoolProperty(

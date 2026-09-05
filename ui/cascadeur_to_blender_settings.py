@@ -238,12 +238,73 @@ def _draw_blender_glb_import(layout, addon_props):
     box.label(text="Blender Import", icon="BLENDER")
     box.separator(type="LINE", factor=1.2)
 
-    col = box.column(align=True)
-    row = col.row()
+    settings = addon_props.blender_glb_import
 
-    row.label(
-        text="Not implemented yet.",
-        icon="STATUS_WARNING_FILLED",
+    box.use_property_split = False
+    box.use_property_decorate = False
+
+    box.prop(settings, "cbb_import_shading")
+    box.prop(settings, "cbb_convert_lighting_mode")
+
+    _draw_glb_import_mesh_panel(box, settings)
+    _draw_glb_import_texture_panel(box, settings)
+    _draw_glb_import_bone_panel(box, settings)
+    _draw_glb_import_pipeline_panel(box, settings)
+
+
+def _draw_glb_import_mesh_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_mesh",
+        default_closed=False,
     )
+    header.label(text="Mesh")
 
-    # _draw_blender_include(box, addon_props)
+    if body:
+        body.prop(settings, "cbb_merge_vertices")
+        body.prop(settings, "cbb_import_merge_material_slots")
+        body.prop(settings, "cbb_import_point_as_pointcloud")
+
+
+def _draw_glb_import_texture_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_texture",
+        default_closed=False,
+    )
+    header.label(text="Texture")
+
+    if body:
+        body.prop(settings, "cbb_import_pack_images")
+        body.prop(settings, "cbb_import_webp_texture")
+        body.prop(settings, "cbb_import_unused_materials")
+
+
+def _draw_glb_import_bone_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_bone",
+        default_closed=False,
+    )
+    header.label(text="Bones & Skin")
+
+    if body:
+        body.prop(settings, "cbb_bone_heuristic")
+
+        if settings.cbb_bone_heuristic == "BLENDER":
+            body.prop(settings, "cbb_guess_original_bind_pose")
+            body.prop(settings, "cbb_disable_bone_shape")
+            body.prop(settings, "cbb_bone_shape_scale_factor")
+
+
+def _draw_glb_import_pipeline_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_pipeline",
+        default_closed=False,
+    )
+    header.label(text="Pipeline")
+
+    if body:
+        body.prop(settings, "cbb_import_scene_as_collection")
+
+        if settings.cbb_import_scene_as_collection:
+            body.prop(settings, "cbb_import_select_created_objects")
+
+        body.prop(settings, "cbb_import_scene_extras")

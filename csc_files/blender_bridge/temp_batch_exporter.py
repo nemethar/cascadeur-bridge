@@ -43,7 +43,7 @@ def run(scene):
             if file_format == "fbx":
                 commons.export_fbx(app, s, message, export_path)
             else:
-                pass
+                commons.export_glb(s, message, export_path)
             if not commons.path_exists(export_path):
                 raise FileNotFoundError(
                     f"Export file was not created. Check Cascadeur event logs for more info!"

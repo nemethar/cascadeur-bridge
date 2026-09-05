@@ -40,7 +40,7 @@ def run(scene):
         if file_format == "fbx":
             commons.export_fbx(app, scene_pr, message, export_path)
         else:
-            pass
+            commons.export_glb(scene_pr, message, export_path)
 
         if not commons.path_exists(export_path):
             raise FileNotFoundError(

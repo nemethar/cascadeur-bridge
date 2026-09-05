@@ -209,14 +209,473 @@ def _draw_blender_glb_export(layout, addon_props):
     box.label(text="Blender Export", icon="BLENDER")
     box.separator(type="LINE", factor=1.2)
 
-    col = box.column(align=True)
-    row = col.row()
+    box.use_property_split = False
+    box.use_property_decorate = False
 
-    row.label(
-        text="Not implemented yet.",
-        icon="STATUS_WARNING_FILLED",
+    settings = addon_props.blender_glb_export
+
+    _draw_glb_export_include_panel(box, settings)
+    _draw_glb_export_transform_panel(box, settings)
+    _draw_glb_export_data_panel(box, settings)
+    _draw_glb_export_animation_panel(box, settings)
+
+
+def _draw_glb_export_include_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_include",
+        default_closed=False,
     )
-    # _draw_blender_include(box, addon_props)
+    header.label(text="Include")
+
+    if body:
+        col = body.column(heading="Limit to", align=True)
+        col.prop(settings, "cbb_selection")
+        col.prop(settings, "cbb_visible")
+        col.prop(settings, "cbb_renderable")
+        col.prop(settings, "cbb_active_collection")
+
+        if settings.cbb_active_collection:
+            col.prop(settings, "cbb_active_collection_with_nested")
+
+        col.prop(settings, "cbb_active_scene")
+
+        col = body.column(heading="Data", align=True)
+        col.prop(settings, "cbb_extras")
+        col.prop(settings, "cbb_cameras")
+        col.prop(settings, "cbb_lights")
+
+
+def _draw_glb_export_transform_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_transform",
+        default_closed=True,
+    )
+    header.label(text="Transform")
+
+    if body:
+        body.prop(settings, "cbb_yup")
+
+
+def _draw_glb_export_data_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data",
+        default_closed=True,
+    )
+    header.label(text="Data")
+
+    if body:
+        _draw_glb_export_scene_graph_panel(body, settings)
+        _draw_glb_export_mesh_panel(body, settings)
+        _draw_glb_export_material_panel(body, settings)
+        _draw_glb_export_shapekeys_panel(body, settings)
+        _draw_glb_export_armature_panel(body, settings)
+        _draw_glb_export_skinning_panel(body, settings)
+        _draw_glb_export_lighting_panel(body, settings)
+        _draw_glb_export_draco_panel(body, settings)
+        _draw_glb_export_meshopt_panel(body, settings)
+
+
+def _draw_glb_export_scene_graph_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_scene_graph",
+        default_closed=True,
+    )
+    header.label(text="Scene Graph")
+
+    if body:
+        body.prop(settings, "cbb_hierarchy_flatten_objs")
+        body.prop(settings, "cbb_hierarchy_full_collections")
+
+
+def _draw_glb_export_mesh_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_mesh",
+        default_closed=True,
+    )
+    header.label(text="Mesh")
+
+    if body:
+        body.prop(settings, "cbb_apply")
+        body.prop(settings, "cbb_texcoords")
+        body.prop(settings, "cbb_normals")
+
+        col = body.column()
+        col.active = settings.cbb_normals
+        col.prop(settings, "cbb_tangents")
+
+        body.prop(settings, "cbb_attributes")
+        body.prop(settings, "cbb_mesh_edges")
+        body.prop(settings, "cbb_mesh_vertices")
+        body.prop(settings, "cbb_shared_accessors")
+
+        # Vertex Colors
+        header, sub_body = body.panel(
+            "CBB_GLB_export_data_vertex_color",
+            default_closed=True,
+        )
+        header.label(text="Vertex Colors")
+
+        if sub_body:
+            sub_body.prop(settings, "cbb_vertex_color")
+
+            if settings.cbb_vertex_color == "NAME":
+                layout.prop(settings, "cbb_vertex_color_name")
+            row = sub_body.row()
+            row.active = settings.cbb_vertex_color != "NONE"
+            row.prop(settings, "cbb_all_vertex_colors")
+
+            row = sub_body.row()
+            row.active = settings.cbb_vertex_color != "NONE"
+            row.prop(
+                settings,
+                "cbb_active_vertex_color_when_no_material",
+            )
+
+
+def _draw_glb_export_material_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_material",
+        default_closed=True,
+    )
+    header.label(text="Material")
+
+    if body:
+        body.prop(settings, "cbb_materials")
+
+        col = body.column()
+        col.active = settings.cbb_materials == "EXPORT"
+
+        col.prop(settings, "cbb_image_format")
+
+        if settings.cbb_image_format in {"AUTO", "JPEG", "WEBP"}:
+            col.prop(settings, "cbb_image_quality")
+
+        col = body.column()
+        col.active = (
+            settings.cbb_image_format != "WEBP"
+            and settings.cbb_materials
+            not in {
+                "PLACEHOLDER",
+                "NONE",
+                "VIEWPORT",
+            }
+        )
+        col.prop(settings, "cbb_image_add_webp")
+
+        col = body.column()
+        col.active = (
+            settings.cbb_image_format != "WEBP"
+            and settings.cbb_materials
+            not in {
+                "PLACEHOLDER",
+                "NONE",
+                "VIEWPORT",
+            }
+        )
+        col.prop(settings, "cbb_image_webp_fallback")
+
+        # Unused Textures & Images
+        header, sub_body = body.panel(
+            "CBB_GLB_export_data_material_unused",
+            default_closed=True,
+        )
+        header.label(text="Unused Textures & Images")
+        header.active = settings.cbb_materials == "EXPORT"
+
+        if sub_body:
+            sub_body.active = settings.cbb_materials == "EXPORT"
+            sub_body.prop(settings, "cbb_unused_images")
+            sub_body.prop(settings, "cbb_unused_textures")
+
+
+def _draw_glb_export_shapekeys_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_shapekeys",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(settings, "cbb_morph", text="")
+    header.label(text="Shape Keys")
+
+    if body:
+        body.active = settings.cbb_morph
+
+        body.prop(settings, "cbb_morph_normal")
+
+        col = body.column()
+        col.active = settings.cbb_morph_normal
+        col.prop(settings, "cbb_morph_tangent")
+
+
+def _draw_glb_export_armature_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_armature",
+        default_closed=True,
+    )
+    header.label(text="Armature")
+
+    if body:
+        body.active = settings.cbb_skins
+
+        body.prop(settings, "cbb_rest_position_armature")
+
+        body.prop(settings, "cbb_def_bones")
+        body.prop(settings, "cbb_armature_object_remove")
+        body.prop(settings, "cbb_hierarchy_flatten_bones")
+        body.prop(settings, "cbb_leaf_bone")
+
+
+def _draw_glb_export_skinning_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_skinning",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(settings, "cbb_skins", text="")
+    header.label(text="Skinning")
+
+    if body:
+        body.active = settings.cbb_skins
+
+        row = body.row()
+        row.prop(settings, "cbb_influence_nb")
+        row.active = not settings.cbb_all_influences
+
+        body.prop(settings, "cbb_all_influences")
+
+
+def _draw_glb_export_lighting_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_lighting",
+        default_closed=True,
+    )
+    header.label(text="Lighting")
+
+    if body:
+        body.prop(settings, "cbb_convert_lighting_mode")
+
+
+def _draw_glb_export_draco_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_compression",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(
+        settings,
+        "cbb_draco_mesh_compression_enable",
+        text="",
+    )
+    header.label(text="Draco Compression")
+
+    if body:
+        body.active = settings.cbb_draco_mesh_compression_enable
+
+        body.prop(
+            settings,
+            "cbb_draco_mesh_compression_level",
+        )
+
+        col = body.column(align=True)
+        col.prop(
+            settings,
+            "cbb_draco_position_quantization",
+            text="Quantize Position",
+        )
+        col.prop(
+            settings,
+            "cbb_draco_normal_quantization",
+            text="Normal",
+        )
+        col.prop(
+            settings,
+            "cbb_draco_texcoord_quantization",
+            text="Tex Coord",
+        )
+        col.prop(
+            settings,
+            "cbb_draco_color_quantization",
+            text="Color",
+        )
+        col.prop(
+            settings,
+            "cbb_draco_generic_quantization",
+            text="Generic",
+        )
+
+
+def _draw_glb_export_meshopt_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_data_meshopt_compression",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(
+        settings,
+        "cbb_meshopt_compression_enable",
+        text="",
+    )
+    header.label(text="Meshopt Compression")
+
+    if body:
+        body.active = settings.cbb_meshopt_compression_enable
+        body.prop(settings, "cbb_meshopt_extension")
+
+
+def _draw_glb_export_animation_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(settings, "cbb_animations", text="")
+    header.label(text="Animation")
+
+    if body:
+        body.active = settings.cbb_animations
+
+        body.prop(settings, "cbb_animation_mode")
+
+        _draw_glb_export_animation_bake_and_merge(body, settings)
+        _draw_glb_export_animation_ranges(body, settings)
+        _draw_glb_export_animation_armature(body, settings)
+        _draw_glb_export_animation_shapekeys(body, settings)
+        _draw_glb_export_animation_sampling(body, settings)
+        _draw_glb_export_animation_optimize(body, settings)
+
+
+def _draw_glb_export_animation_bake_and_merge(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_bake_and_merge",
+        default_closed=False,
+    )
+    header.label(text="Bake & Merge")
+
+    if body:
+        row = body.row()
+        row.active = settings.cbb_force_sampling and settings.cbb_animation_mode in {
+            "ACTIONS",
+            "ACTIVE_ACTIONS",
+            "BROADCAST",
+        }
+        row.prop(settings, "cbb_bake_animation")
+
+        row = body.row()
+        row.active = (
+            settings.cbb_force_sampling and settings.cbb_animation_mode == "ACTIONS"
+        )
+        row.prop(settings, "cbb_merge_animation")
+
+
+def _draw_glb_export_animation_ranges(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_ranges",
+        default_closed=True,
+    )
+    header.label(text="Rest & Ranges")
+
+    if body:
+        body.prop(settings, "cbb_current_frame")
+
+        row = body.row()
+        row.active = settings.cbb_animation_mode in {
+            "ACTIONS",
+            "ACTIVE_ACTIONS",
+            "BROADCAST",
+            "NLA_TRACKS",
+        }
+        row.prop(settings, "cbb_frame_range")
+
+        body.prop(settings, "cbb_anim_slide_to_zero")
+
+        row = body.row()
+        row.active = settings.cbb_animation_mode in {
+            "ACTIONS",
+            "ACTIVE_ACTIONS",
+            "BROADCAST",
+            "NLA_TRACKS",
+        }
+        row.prop(settings, "cbb_negative_frame")
+
+
+def _draw_glb_export_animation_armature(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_armature",
+        default_closed=True,
+    )
+    header.label(text="Armature")
+
+    if body:
+        row = body.row()
+        row.active = settings.cbb_animation_mode == "ACTIONS"
+        row.prop(settings, "cbb_anim_single_armature")
+
+        body.prop(settings, "cbb_reset_pose_bones")
+
+
+def _draw_glb_export_animation_shapekeys(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_shapekeys",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(settings, "cbb_morph_animation", text="")
+    header.label(text="Shape Keys Animation")
+
+    if body:
+        body.active = settings.cbb_animations and settings.cbb_morph
+
+        row = body.row()
+        row.active = settings.cbb_morph_animation
+        row.prop(settings, "cbb_morph_reset_sk_data")
+
+
+def _draw_glb_export_animation_sampling(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_sampling",
+        default_closed=True,
+    )
+
+    header.use_property_split = False
+    header.prop(settings, "cbb_force_sampling", text="")
+    header.label(text="Sampling Animations")
+
+    if body:
+        body.active = settings.cbb_animations and settings.cbb_force_sampling
+
+        body.prop(settings, "cbb_frame_step")
+        body.prop(settings, "cbb_sampling_interpolation_fallback")
+
+
+def _draw_glb_export_animation_optimize(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_export_animation_optimize",
+        default_closed=True,
+    )
+    header.label(text="Optimize Animations")
+
+    if body:
+        body.active = settings.cbb_animations
+
+        body.prop(settings, "cbb_optimize_animation_size")
+        body.prop(
+            settings,
+            "cbb_optimize_animation_keep_anim_armature",
+        )
+        body.prop(
+            settings,
+            "cbb_optimize_animation_keep_anim_object",
+        )
+        body.prop(
+            settings,
+            "cbb_optimize_disable_viewport",
+        )
 
 
 def _draw_cascadeur_glb_import(layout, addon_props):

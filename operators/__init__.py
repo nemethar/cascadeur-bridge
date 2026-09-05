@@ -1,5 +1,5 @@
 if "bpy" not in locals():
-    from . import fbx_transfer
+    from . import file_transfer
     from . import cascadeur
     from . import addon_properties
     from . import preferences
@@ -8,7 +8,7 @@ if "bpy" not in locals():
 else:
     import importlib
 
-    importlib.reload(fbx_transfer)
+    importlib.reload(file_transfer)
     importlib.reload(cascadeur)
     importlib.reload(addon_properties)
     importlib.reload(preferences)
@@ -16,9 +16,9 @@ else:
     importlib.reload(free_version_handling)
 
 classes = [
-    fbx_transfer.CBB_OT_export_blender_fbx,
-    fbx_transfer.CBB_OT_import_cascadeur_fbx,
-    fbx_transfer.CBB_OT_import_action_to_selected,
+    file_transfer.CBB_OT_export_blender_fbx,
+    file_transfer.CBB_OT_import_cascadeur_fbx,
+    file_transfer.CBB_OT_import_action_to_selected,
     cascadeur.CBB_OT_start_cascadeur,
     preferences.CBB_OT_install_required_files,
     preferences.CBB_OT_add_cascadeur_asset_library,

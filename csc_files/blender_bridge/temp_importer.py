@@ -35,7 +35,7 @@ def run(scene):
         if file_format == "fbx":
             commons.import_fbx(app, scene_pr, message, file_path)
         else:
-            pass
+            commons.import_glb(scene_pr, message, file_path)
 
         scene.info(f"File imported from {file_path}")
         client.send_message({"status": "completed"})
