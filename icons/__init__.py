@@ -7,12 +7,17 @@ _preview_collections = {}
 def register():
     pcoll = previews.new()
 
-    icon_path = os.path.join(
-        os.path.dirname(__file__),
-        "cascadeur-icon.png",
-    )
+    icon_dir = os.path.join(os.path.dirname(__file__))
 
-    pcoll.load("cascadeur", icon_path, "IMAGE")
+    icons = {
+        "cascadeur": "cascadeur-icon.png",
+        "github": "github-icon.png",
+        "youtube": "youtube-icon.png",
+    }
+
+    for name, filename in icons.items():
+        icon_path = os.path.join(icon_dir, filename)
+        pcoll.load(name, icon_path, "IMAGE")
 
     _preview_collections["main"] = pcoll
 
