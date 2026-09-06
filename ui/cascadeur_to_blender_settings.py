@@ -30,21 +30,20 @@ def draw_cascadeur_to_blender_settings(layout, context):
         _draw_fbx_settings(layout, addon_props)
 
     elif addon_props.cascadeur_to_blender.cbb_file_format == "glb":
-        row = layout.row(align=True)
-        row.label(
-            text="Not implemented yet.",
-            icon="STATUS_WARNING_FILLED",
-        )
+        _draw_glb_settings(layout, addon_props)
+
+
+# FBX
 
 
 def _draw_fbx_settings(layout, addon_props):
     row = layout.row(align=True)
 
-    _draw_cascadeur_export(row.column(align=True), addon_props)
-    _draw_blender_import(row.column(align=True), addon_props)
+    _draw_cascadeur_fbx_export(row.column(align=True), addon_props)
+    _draw_blender_fbx_import(row.column(align=True), addon_props)
 
 
-def _draw_cascadeur_export(layout, addon_props):
+def _draw_cascadeur_fbx_export(layout, addon_props):
     box = layout.box()
     box.label(
         text="Cascadeur Export",
@@ -72,7 +71,7 @@ def _draw_cascadeur_export(layout, addon_props):
     )
 
 
-def _draw_blender_import(layout, addon_props):
+def _draw_blender_fbx_import(layout, addon_props):
     box = layout.box()
     box.label(text="Blender Import", icon="BLENDER")
     box.separator(type="LINE", factor=1.2)
@@ -87,7 +86,7 @@ def _draw_blender_import(layout, addon_props):
 def _draw_blender_include(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_import_include",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Include")
 
@@ -107,7 +106,7 @@ def _draw_blender_include(layout, addon_props):
 def _draw_blender_transform(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_import_transform",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Transform")
 
@@ -123,7 +122,7 @@ def _draw_blender_transform(layout, addon_props):
         # Manual Orientation sub panel
         header_orientation, panel_orientation = panel.panel(
             "cbb_blender_import_transform_orientation",
-            default_closed=False,
+            default_closed=True,
         )
         header_orientation.use_property_split = False
         header_orientation.prop(settings, "cbb_use_manual_orientation", text="")
@@ -186,3 +185,119 @@ def _draw_blender_armature(layout, addon_props):
         col.prop(settings, "cbb_automatic_bone_orientation")
         col.prop(settings, "cbb_primary_bone_axis")
         col.prop(settings, "cbb_secondary_bone_axis")
+
+
+# GLB
+
+
+def _draw_glb_settings(layout, addon_props):
+    row = layout.row(align=True)
+
+    _draw_cascadeur_glb_export(row.column(align=True), addon_props)
+    _draw_blender_glb_import(row.column(align=True), addon_props)
+
+
+def _draw_cascadeur_glb_export(layout, addon_props):
+    box = layout.box()
+    box.label(
+        text="Cascadeur Export",
+        icon_value=icons.get_icon_id("cascadeur"),
+    )
+    box.separator(type="LINE", factor=1.2)
+
+    settings = addon_props.cascadeur_glb_export
+
+    # Preset
+    row = box.row(align=True)
+    row.prop(settings, "cbb_preset")
+
+    # Cascadeur import options
+    col = box.column(align=True)
+    col.prop(settings, "cbb_for_selected_interval")
+    col.prop(settings, "cbb_for_selected_objects")
+    col.prop(settings, "cbb_include_animation")
+
+    # Scale factor
+    col = box.column(align=True)
+    col.prop(settings, "cbb_use_scale_factor")
+
+    row = col.row(align=True)
+    row.enabled = settings.cbb_use_scale_factor
+    row.prop(settings, "cbb_scale_factor")
+
+
+def _draw_blender_glb_import(layout, addon_props):
+    box = layout.box()
+    box.label(text="Blender Import", icon="BLENDER")
+    box.separator(type="LINE", factor=1.2)
+
+    settings = addon_props.blender_glb_import
+
+    box.use_property_split = False
+    box.use_property_decorate = False
+
+    box.prop(settings, "cbb_import_shading")
+    box.prop(settings, "cbb_convert_lighting_mode")
+
+    _draw_glb_import_mesh_panel(box, settings)
+    _draw_glb_import_texture_panel(box, settings)
+    _draw_glb_import_bone_panel(box, settings)
+    _draw_glb_import_pipeline_panel(box, settings)
+
+
+def _draw_glb_import_mesh_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_mesh",
+        default_closed=True,
+    )
+    header.label(text="Mesh")
+
+    if body:
+        body.prop(settings, "cbb_merge_vertices")
+        body.prop(settings, "cbb_import_merge_material_slots")
+        body.prop(settings, "cbb_import_point_as_pointcloud")
+
+
+def _draw_glb_import_texture_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_texture",
+        default_closed=True,
+    )
+    header.label(text="Texture")
+
+    if body:
+        body.prop(settings, "cbb_import_pack_images")
+        body.prop(settings, "cbb_import_webp_texture")
+        body.prop(settings, "cbb_import_unused_materials")
+
+
+def _draw_glb_import_bone_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_bone",
+        default_closed=True,
+    )
+    header.label(text="Bones & Skin")
+
+    if body:
+        body.prop(settings, "cbb_bone_heuristic")
+
+        if settings.cbb_bone_heuristic == "BLENDER":
+            body.prop(settings, "cbb_guess_original_bind_pose")
+            body.prop(settings, "cbb_disable_bone_shape")
+            body.prop(settings, "cbb_bone_shape_scale_factor")
+
+
+def _draw_glb_import_pipeline_panel(layout, settings):
+    header, body = layout.panel(
+        "CBB_GLB_import_pipeline",
+        default_closed=True,
+    )
+    header.label(text="Pipeline")
+
+    if body:
+        body.prop(settings, "cbb_import_scene_as_collection")
+
+        if settings.cbb_import_scene_as_collection:
+            body.prop(settings, "cbb_import_select_created_objects")
+
+        body.prop(settings, "cbb_import_scene_extras")

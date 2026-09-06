@@ -30,7 +30,7 @@ def delete_file(file_path: str) -> None:
         print(f"{file_path} does not exist.")
 
 
-def get_export_path() -> str:
+def get_export_path(file_format: str) -> str:
     """
     Export path of the fbx file in the tempfile directory.
     Filename is based on current time.
@@ -39,7 +39,7 @@ def get_export_path() -> str:
     """
     temp_dir = tempfile.gettempdir()
     current_time = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    return os.path.join(temp_dir, f"temp_export_{current_time}.fbx")
+    return os.path.join(temp_dir, f"temp_export_{current_time}.{file_format}")
 
 
 def copy_files(

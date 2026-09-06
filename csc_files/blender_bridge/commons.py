@@ -69,7 +69,7 @@ def export_fbx(
 
     tools_manager = app.get_tools_manager()
     fbx_scene_loader = tools_manager.get_tool("FbxSceneLoader").get_fbx_loader(scene)
-    fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
+    fbx_scene_loader.set_settings(set_fbx_settings(settings_dict))
 
     method_name = message.get("export_method", "export_all_objects")
     export_method = getattr(fbx_scene_loader, method_name)
@@ -95,9 +95,36 @@ def import_fbx(
     fbx_scene_loader = tools_manager.get_tool("FbxSceneLoader").get_fbx_loader(scene)
     import_method = getattr(fbx_scene_loader, message.get("import_method"))
 
-    fbx_scene_loader.set_settings(commons.set_fbx_settings(settings_dict))
+    fbx_scene_loader.set_settings(set_fbx_settings(settings_dict))
 
     import_method(file_path)
+
+
+def set_glb_options(
+    options: csc.glb.ExportOptions | csc.glb.ImportOptions,
+    preferences: dict,
+) -> None:
+    options.throw_exception = True
+
+    for name, value in preferences.items():
+        if hasattr(options, name):
+            setattr(options, name, value)
+
+
+def export_glb(scene: csc.view.Scene, message: dict, file_path: str):
+    options = csc.glb.ExportOptions()
+    settings_dict: dict = message.get("export_settings", {})
+
+    set_glb_options(options, settings_dict)
+    csc.glb.process_export(scene.domain_scene(), file_path, options)
+
+
+def import_glb(scene: csc.view.Scene, message: dict, file_path: str):
+    options = csc.glb.ImportOptions()
+    settings_dict: dict = message.get("import_settings", {})
+
+    set_glb_options(options, settings_dict)
+    csc.glb.process_import(scene.domain_scene(), file_path, options)
 
 
 def get_imported_joints(
