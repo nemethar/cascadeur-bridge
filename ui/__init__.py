@@ -15,4 +15,5 @@ classes = [
     main_panel.CBB_PT_parent_panel,
     settings_panel.CBB_PT_csc_bridge_settings,
     socials.CBB_PT_csc_bridge_info,
+    socials.CBB_OT_open_url,
 ]
