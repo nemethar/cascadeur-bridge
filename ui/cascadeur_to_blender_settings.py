@@ -86,7 +86,7 @@ def _draw_blender_fbx_import(layout, addon_props):
 def _draw_blender_include(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_import_include",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Include")
 
@@ -106,7 +106,7 @@ def _draw_blender_include(layout, addon_props):
 def _draw_blender_transform(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_import_transform",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Transform")
 
@@ -122,7 +122,7 @@ def _draw_blender_transform(layout, addon_props):
         # Manual Orientation sub panel
         header_orientation, panel_orientation = panel.panel(
             "cbb_blender_import_transform_orientation",
-            default_closed=False,
+            default_closed=True,
         )
         header_orientation.use_property_split = False
         header_orientation.prop(settings, "cbb_use_manual_orientation", text="")
@@ -225,13 +225,6 @@ def _draw_cascadeur_glb_export(layout, addon_props):
     row.enabled = settings.cbb_use_scale_factor
     row.prop(settings, "cbb_scale_factor")
 
-    # Mesh options
-    col = box.column(align=True)
-    col.prop(settings, "cbb_call_process_skinned_mesh")
-    col.prop(settings, "cbb_translate_meshes_primitive_attributes")
-    col.prop(settings, "cbb_rotate_meshes_primitive_attributes")
-    col.prop(settings, "cbb_scale_meshes_primitive_attributes")
-
 
 def _draw_blender_glb_import(layout, addon_props):
     box = layout.box()
@@ -255,7 +248,7 @@ def _draw_blender_glb_import(layout, addon_props):
 def _draw_glb_import_mesh_panel(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_import_mesh",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Mesh")
 
@@ -268,7 +261,7 @@ def _draw_glb_import_mesh_panel(layout, settings):
 def _draw_glb_import_texture_panel(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_import_texture",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Texture")
 
@@ -281,7 +274,7 @@ def _draw_glb_import_texture_panel(layout, settings):
 def _draw_glb_import_bone_panel(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_import_bone",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Bones & Skin")
 
@@ -297,7 +290,7 @@ def _draw_glb_import_bone_panel(layout, settings):
 def _draw_glb_import_pipeline_panel(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_import_pipeline",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Pipeline")
 

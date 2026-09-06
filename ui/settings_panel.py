@@ -6,6 +6,7 @@ class CBB_PT_csc_bridge_settings(PanelBasics, bpy.types.Panel):
     bl_idname = "CBB_PT_csc_bridge_settings"
     bl_label = "Advnaced Settings"
     bl_parent_id = "CBB_PT_parent"
+    bl_options = {"DEFAULT_CLOSED"}
 
     def draw_header(self, context):
         self.layout.label(text="", icon="SETTINGS")

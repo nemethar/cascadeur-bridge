@@ -957,7 +957,7 @@ class CBB_PG_blender_glb_import_settings(bpy.types.PropertyGroup):
     cbb_disable_bone_shape: bpy.props.BoolProperty(
         name="Disable Bone Shape",
         description="Do not create bone shapes",
-        default=False,
+        default=True,
     )
 
     cbb_bone_shape_scale_factor: bpy.props.FloatProperty(
@@ -1323,7 +1323,7 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
     cbb_def_bones: bpy.props.BoolProperty(
         name="Export Deformation Bones Only",
         description="Export Deformation bones only",
-        default=False,
+        default=True,
     )
 
     cbb_armature_object_remove: bpy.props.BoolProperty(

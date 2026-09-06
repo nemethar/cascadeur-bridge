@@ -75,7 +75,7 @@ def _draw_blender_path_mode(layout, addon_props):
 def _draw_blender_include(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_export_include",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Include")
 
@@ -94,7 +94,7 @@ def _draw_blender_include(layout, addon_props):
 def _draw_blender_transform(layout, addon_props):
     header, panel = layout.panel(
         "cbb_blender_export_transform",
-        default_closed=False,
+        default_closed=True,
     )
 
     header.label(text="Transform")
@@ -223,7 +223,7 @@ def _draw_blender_glb_export(layout, addon_props):
 def _draw_glb_export_include_panel(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_export_include",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Include")
 
@@ -552,7 +552,7 @@ def _draw_glb_export_animation_panel(layout, settings):
 def _draw_glb_export_animation_bake_and_merge(layout, settings):
     header, body = layout.panel(
         "CBB_GLB_export_animation_bake_and_merge",
-        default_closed=False,
+        default_closed=True,
     )
     header.label(text="Bake & Merge")
 
