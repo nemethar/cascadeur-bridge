@@ -32,9 +32,9 @@ license = [
 
 
 [permissions]
-network = "Communicate with Cascadeur through a localhost socket, open websites related to the add-on."
-files = "Import/export FBX from/to disk"
-clipboard = "Copy URLs and Promocode for Cascadeur"
+network = "Communicate with Cascadeur through a localhost socket and open Cascadeur Bridge related websites"
+files = "Import and export FBX/GLB files from and to disk"
+clipboard = "Copy URLs and Cascadeur promo codes to the clipboard"
 
 # # Optional: advanced build settings.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build
