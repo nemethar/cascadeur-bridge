@@ -13,6 +13,8 @@ def register():
         "cascadeur": "cascadeur-icon.png",
         "github": "github-icon.png",
         "youtube": "youtube-icon.png",
+        "arp-export": "export.png",
+        "arp-quick-export": "export_flash.png",
     }
 
     for name, filename in icons.items():

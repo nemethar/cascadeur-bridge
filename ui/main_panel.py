@@ -1,5 +1,4 @@
 import bpy
-from .. import icons
 from ..utils.csc_handling import CascadeurHandler
 from ..utils.config_handling import get_panel_name
 from .. import addon_info
@@ -87,6 +86,7 @@ class CBB_PT_parent_panel(PanelBasics, bpy.types.Panel):
         if not addon_info.operation_completed:
             col = layout.column()
             col.label(icon="LOCKED", text="Operation in progress!")
+            col.label(text="Press ESC to Cancel.")
             return True
         else:
             return False
