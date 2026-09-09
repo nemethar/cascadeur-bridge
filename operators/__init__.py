@@ -5,6 +5,7 @@ if "bpy" not in locals():
     from . import preferences
     from . import settings
     from . import free_version_handling
+    from . import arp_wrapper
 else:
     import importlib
 
@@ -14,6 +15,7 @@ else:
     importlib.reload(preferences)
     importlib.reload(settings)
     importlib.reload(free_version_handling)
+    importlib.reload(arp_wrapper)
 
 classes = [
     file_transfer.CBB_OT_export_blender_fbx,
@@ -29,4 +31,6 @@ classes = [
     settings.CBB_OT_save_port_number,
     free_version_handling.CBB_OT_license_required_popup,
     free_version_handling.CBB_OT_copy_discount_code,
+    arp_wrapper.CBB_OT_export_arp_fbx,
+    arp_wrapper.CBB_OT_export_arp_glb,
 ]

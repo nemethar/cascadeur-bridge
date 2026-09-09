@@ -342,6 +342,10 @@ class OperatorBaseClass(bpy.types.Operator):
             if event.type != "TIMER":
                 return {"PASS_THROUGH"}
 
+            # Give subclasses a chance to do asynchronous work
+            # before Cascadeur connects.
+            status = self.on_timer(context)
+
             # Accept incoming socket connections
             self.server_socket.run()
 
@@ -362,6 +366,10 @@ class OperatorBaseClass(bpy.types.Operator):
             self.report({"ERROR"}, str(e))
             self.cleanup(context)
             return {"CANCELLED"}
+
+    def on_timer(self, context):
+        """Optional per-timer callback used by subclasses."""
+        return {"RUNNING_MODAL"}
 
     def on_execute(self, context):
         """

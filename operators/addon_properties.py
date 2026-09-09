@@ -27,6 +27,12 @@ class CBB_PG_blender_to_cascadeur(bpy.types.PropertyGroup):
         default="fbx",
     )
 
+    cbb_delete_arp_export: bpy.props.BoolProperty(
+        name="Delete Exported File",
+        description="Delete the exported file after it has been successfully imported into Cascadeur",
+        default=True,
+    )
+
 
 class CBB_PG_cascadeur_fbx_import_settings(bpy.types.PropertyGroup):
     cbb_import_methods: bpy.props.EnumProperty(
@@ -177,7 +183,7 @@ class CBB_PG_cascadeur_glb_import_settings(bpy.types.PropertyGroup):
     cbb_include_animation: bpy.props.BoolProperty(
         name="Include Animation",
         description="Include animation data",
-        default=True,
+        default=False,
     )
 
     cbb_use_scale_factor: bpy.props.BoolProperty(
