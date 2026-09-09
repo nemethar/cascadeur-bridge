@@ -27,12 +27,14 @@ license = [
 
 
 # # Optional: list of supported platforms. If omitted, the extension will be available in all operating systems.
-platforms = ["windows-x64", "linux-x64"]
+# platforms = ["windows-x64", "macos-arm64", "linux-x64"]
+# # Other supported platforms: "windows-arm64", "macos-x64"
 
 
 [permissions]
-network = "Communicate with Cascadeur through a localhost socket"
+network = "Communicate with Cascadeur through a localhost socket, open websites related to the add-on."
 files = "Import/export FBX from/to disk"
+clipboard = "Copy URLs and Promocode for Cascadeur"
 
 # # Optional: advanced build settings.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build

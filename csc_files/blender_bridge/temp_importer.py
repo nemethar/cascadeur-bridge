@@ -15,6 +15,7 @@ def run(scene):
     from . import commons
 
     model_viewer = scene.model_viewer()
+    # To check what kind of objects were imported
     objects_before_import = set(model_viewer.get_objects())
 
     app = csc.app.get_application()
@@ -59,8 +60,20 @@ def run(scene):
         if client is not None:
             client.close()
 
-    if message.get("import_method") == "import_model":
+    # Check if Model import preset is used
+    if file_format == "fbx" and message.get("import_method") == "import_model":
+        is_model_import = True
+    elif file_format == "glb":
+        settings_dict: dict = message.get("import_settings", {})
+        is_model_import = (
+            not settings_dict.get("is_update_mode")
+            and not settings_dict.get("include_animation")
+            and settings_dict.get("include_objects")
+        )
+    else:
+        is_model_import = False
 
+    if is_model_import:
         imported_joints = commons.get_imported_joints(
             model_viewer, objects_before_import
         )

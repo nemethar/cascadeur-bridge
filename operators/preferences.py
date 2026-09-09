@@ -28,6 +28,10 @@ class CBB_OT_install_required_files(bpy.types.Operator):
                 {"ERROR"},
                 "Cascadeur scripts folder not found. Make sure Cascadeur 2026.2 or newer is installed.",
             )
+            addon_prefs = context.preferences.addons[
+                addon_info.PACKAGE_NAME
+            ].preferences
+            addon_prefs.manual_install_open = True
             return {"CANCELLED"}
         result = file_handling.copy_files(
             commands_source, commands_path, os.listdir(commands_source)
@@ -40,6 +44,10 @@ class CBB_OT_install_required_files(bpy.types.Operator):
                 {"INFO"},
                 "Check the Manual Installation Guide or Restart Blender as Admin and try again",
             )
+            addon_prefs = context.preferences.addons[
+                addon_info.PACKAGE_NAME
+            ].preferences
+            addon_prefs.manual_install_open = True
             return {"CANCELLED"}
         self.report({"INFO"}, "All necessary files have been successfully copied")
         return {"FINISHED"}
