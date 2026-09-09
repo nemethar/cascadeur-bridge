@@ -58,11 +58,16 @@ class CBB_preferences(bpy.types.AddonPreferences):
         default=DEFAULT_ASSET_LIB_NAME,
     )
 
+    manual_install_open: bpy.props.BoolProperty(
+        default=False,
+    )
+
     def draw(self, context):
         _ch = CascadeurHandler()
         layout = self.layout
         col = layout.column(align=False)
-        col.prop(self, "csc_tab_name")
+        box = col.box()
+        box.prop(self, "csc_tab_name")
 
         col.separator(type="SPACE", factor=1.5)
 
@@ -102,7 +107,10 @@ class CBB_preferences(bpy.types.AddonPreferences):
         )
 
         # Manual installation guide
-        header, panel = box.panel("cbb_manual_install", default_closed=True)
+        header, panel = box.panel_prop(
+            self,
+            "manual_install_open",
+        )
 
         header.label(text="Install Manually:")
 
