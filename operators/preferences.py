@@ -23,7 +23,7 @@ class CBB_OT_install_required_files(bpy.types.Operator):
             addon_info.ADDON_PATH, "csc_files", "blender_bridge"
         )
         commands_path = os.path.join(ch.commands_path, "blender_bridge")
-        if not file_handling.path_exists(commands_path):
+        if not file_handling.path_exists(ch.commands_path):
             self.report(
                 {"ERROR"},
                 "Cascadeur scripts folder not found. Make sure Cascadeur 2026.2 or newer is installed.",

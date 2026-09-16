@@ -32,7 +32,7 @@ license = [
 
 
 [permissions]
-network = "Communicate with Cascadeur through a localhost socket and open Cascadeur Bridge related websites"
+network = "Communicate with Cascadeur using TCP, open add-on related sites"
 files = "Import and export FBX/GLB files from and to disk"
 clipboard = "Copy URLs and Cascadeur promo codes to the clipboard"
 
