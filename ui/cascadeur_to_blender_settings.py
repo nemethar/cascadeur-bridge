@@ -78,7 +78,13 @@ def _draw_blender_fbx_import(layout, addon_props):
 
     _draw_blender_include(box, addon_props)
     _draw_blender_transform(box, addon_props)
-    _draw_blender_materials(box, addon_props)
+
+    # Only draw the Materials section when supported by this Blender version.
+    if bpy.ops.import_scene.fbx.get_rna_type().properties.get(
+        "mtl_name_collision_mode"
+    ):
+        _draw_blender_materials(box, addon_props)
+
     _draw_blender_animation(box, addon_props)
     _draw_blender_armature(box, addon_props)
 
@@ -254,8 +260,10 @@ def _draw_glb_import_mesh_panel(layout, settings):
 
     if body:
         body.prop(settings, "cbb_merge_vertices")
-        body.prop(settings, "cbb_import_merge_material_slots")
-        body.prop(settings, "cbb_import_point_as_pointcloud")
+        if bpy.ops.import_scene.gltf.get_rna_type().properties.get(
+            "import_merge_material_slots"
+        ):
+            body.prop(settings, "cbb_import_merge_material_slots")
 
 
 def _draw_glb_import_texture_panel(layout, settings):
@@ -268,7 +276,10 @@ def _draw_glb_import_texture_panel(layout, settings):
     if body:
         body.prop(settings, "cbb_import_pack_images")
         body.prop(settings, "cbb_import_webp_texture")
-        body.prop(settings, "cbb_import_unused_materials")
+        if bpy.ops.import_scene.gltf.get_rna_type().properties.get(
+            "import_unused_materials"
+        ):
+            body.prop(settings, "cbb_import_unused_materials")
 
 
 def _draw_glb_import_bone_panel(layout, settings):
@@ -295,9 +306,11 @@ def _draw_glb_import_pipeline_panel(layout, settings):
     header.label(text="Pipeline")
 
     if body:
-        body.prop(settings, "cbb_import_scene_as_collection")
-
-        if settings.cbb_import_scene_as_collection:
-            body.prop(settings, "cbb_import_select_created_objects")
+        if bpy.ops.import_scene.gltf.get_rna_type().properties.get(
+            "import_scene_as_collection"
+        ):
+            body.prop(settings, "cbb_import_scene_as_collection")
+            if settings.cbb_import_scene_as_collection:
+                body.prop(settings, "cbb_import_select_created_objects")
 
         body.prop(settings, "cbb_import_scene_extras")

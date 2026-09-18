@@ -272,7 +272,6 @@ def _draw_glb_export_data_panel(layout, settings):
         _draw_glb_export_skinning_panel(body, settings)
         _draw_glb_export_lighting_panel(body, settings)
         _draw_glb_export_draco_panel(body, settings)
-        _draw_glb_export_meshopt_panel(body, settings)
 
 
 def _draw_glb_export_scene_graph_panel(layout, settings):
@@ -318,8 +317,6 @@ def _draw_glb_export_mesh_panel(layout, settings):
         if sub_body:
             sub_body.prop(settings, "cbb_vertex_color")
 
-            if settings.cbb_vertex_color == "NAME":
-                layout.prop(settings, "cbb_vertex_color_name")
             row = sub_body.row()
             row.active = settings.cbb_vertex_color != "NONE"
             row.prop(settings, "cbb_all_vertex_colors")
@@ -505,25 +502,6 @@ def _draw_glb_export_draco_panel(layout, settings):
             "cbb_draco_generic_quantization",
             text="Generic",
         )
-
-
-def _draw_glb_export_meshopt_panel(layout, settings):
-    header, body = layout.panel(
-        "CBB_GLB_export_data_meshopt_compression",
-        default_closed=True,
-    )
-
-    header.use_property_split = False
-    header.prop(
-        settings,
-        "cbb_meshopt_compression_enable",
-        text="",
-    )
-    header.label(text="Meshopt Compression")
-
-    if body:
-        body.active = settings.cbb_meshopt_compression_enable
-        body.prop(settings, "cbb_meshopt_extension")
 
 
 def _draw_glb_export_animation_panel(layout, settings):
