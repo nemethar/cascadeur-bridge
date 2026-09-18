@@ -889,12 +889,6 @@ class CBB_PG_blender_glb_import_settings(bpy.types.PropertyGroup):
         default=True,
     )
 
-    cbb_import_point_as_pointcloud: bpy.props.BoolProperty(
-        name="Import Points as Point Cloud",
-        description=("Import mesh with only POINTS primitives as Point Cloud objects"),
-        default=False,
-    )
-
     ###########
     # Texture #
     ###########
@@ -1464,31 +1458,6 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
         default=12,
         min=0,
         max=30,
-    )
-
-    #  Meshopt Compression
-    cbb_meshopt_compression_enable: bpy.props.BoolProperty(
-        name="Meshopt Compression",
-        description="Compress mesh using Meshopt",
-        default=False,
-    )
-
-    cbb_meshopt_extension: bpy.props.EnumProperty(
-        name="Meshopt Extension",
-        items=(
-            (
-                "EXT_meshopt_compression",
-                "EXT_meshopt_compression",
-                "Use EXT_meshopt_compression extension for mesh compression.",
-            ),
-            (
-                "KHR_meshopt_compression",
-                "KHR_meshopt_compression",
-                "Use KHR_meshopt_compression extension for mesh compression.",
-            ),
-        ),
-        description="Extension to use for meshopt compression",
-        default="EXT_meshopt_compression",
     )
 
     #############

@@ -8,43 +8,57 @@ from .. import addon_info
 import os
 
 
+def operator_has_property(operator, property_name: str) -> bool:
+    return operator.get_rna_type().properties.get(property_name) is not None
+
+
 def import_fbx(file_path: str) -> list:
     """
-    Importing the provided file with the fbx import settings set on the N panel.
+    Import the provided file with the FBX import settings set on the N panel.
 
     :param str file_path: FBX file path to be imported
     :return list: List of selected objects in the scene
     """
     import_props = bpy.context.scene.cbb_settings.blender_fbx_import
+
+    # Build the import arguments
+    fbx_props = {
+        # Include
+        "use_custom_normals": import_props.cbb_use_custom_normals,
+        "use_subsurf": import_props.cbb_use_subsurf,
+        "use_custom_props": import_props.cbb_use_custom_props,
+        "use_custom_props_enum_as_string": import_props.cbb_use_custom_props_enum_as_string,
+        "use_image_search": import_props.cbb_use_image_search,
+        "colors_type": import_props.cbb_colors_type,
+        # Transform
+        "global_scale": import_props.cbb_global_scale,
+        "decal_offset": import_props.cbb_decal_offset,
+        "bake_space_transform": import_props.cbb_bake_space_transform,
+        "use_prepost_rot": import_props.cbb_use_prepost_rot,
+        "use_manual_orientation": import_props.cbb_use_manual_orientation,
+        "axis_forward": import_props.cbb_axis_forward,
+        "axis_up": import_props.cbb_axis_up,
+        # Animation
+        "use_anim": import_props.cbb_use_anim,
+        "anim_offset": import_props.cbb_anim_offset,
+        # Armature
+        "ignore_leaf_bones": import_props.cbb_ignore_leaf_bones,
+        "force_connect_children": import_props.cbb_force_connect_children,
+        "automatic_bone_orientation": import_props.cbb_automatic_bone_orientation,
+        "primary_bone_axis": import_props.cbb_primary_bone_axis,
+        "secondary_bone_axis": import_props.cbb_secondary_bone_axis,
+    }
+
+    # Materials - only available in Blender versions that expose this property.
+    fbx_operator = bpy.ops.import_scene.fbx
+    if operator_has_property(fbx_operator, "mtl_name_collision_mode"):
+        fbx_props["mtl_name_collision_mode"] = import_props.cbb_mtl_name_collision_mode
+
     bpy.ops.import_scene.fbx(
         filepath=file_path,
-        # Include
-        use_custom_normals=import_props.cbb_use_custom_normals,
-        use_subsurf=import_props.cbb_use_subsurf,
-        use_custom_props=import_props.cbb_use_custom_props,
-        use_custom_props_enum_as_string=import_props.cbb_use_custom_props_enum_as_string,
-        use_image_search=import_props.cbb_use_image_search,
-        colors_type=import_props.cbb_colors_type,
-        # Transform
-        global_scale=import_props.cbb_global_scale,
-        decal_offset=import_props.cbb_decal_offset,
-        bake_space_transform=import_props.cbb_bake_space_transform,
-        use_prepost_rot=import_props.cbb_use_prepost_rot,
-        use_manual_orientation=import_props.cbb_use_manual_orientation,
-        axis_forward=import_props.cbb_axis_forward,
-        axis_up=import_props.cbb_axis_up,
-        # Materials
-        mtl_name_collision_mode=import_props.cbb_mtl_name_collision_mode,
-        # Animation
-        use_anim=import_props.cbb_use_anim,
-        anim_offset=import_props.cbb_anim_offset,
-        # Armature
-        ignore_leaf_bones=import_props.cbb_ignore_leaf_bones,
-        force_connect_children=import_props.cbb_force_connect_children,
-        automatic_bone_orientation=import_props.cbb_automatic_bone_orientation,
-        primary_bone_axis=import_props.cbb_primary_bone_axis,
-        secondary_bone_axis=import_props.cbb_secondary_bone_axis,
+        **fbx_props,
     )
+
     # Return the list of imported objects
     return bpy.context.selected_objects
 
@@ -112,28 +126,41 @@ def import_glb(file_path: str) -> list:
     """
     import_props = bpy.context.scene.cbb_settings.blender_glb_import
 
-    bpy.ops.import_scene.gltf(
-        filepath=file_path,
+    glb_props = {
         # Lighting
-        export_import_convert_lighting_mode=import_props.cbb_convert_lighting_mode,
+        "export_import_convert_lighting_mode": import_props.cbb_convert_lighting_mode,
         # Mesh
-        merge_vertices=import_props.cbb_merge_vertices,
-        import_shading=import_props.cbb_import_shading,
-        import_merge_material_slots=import_props.cbb_import_merge_material_slots,
-        import_point_as_pointcloud=import_props.cbb_import_point_as_pointcloud,
+        "merge_vertices": import_props.cbb_merge_vertices,
+        "import_shading": import_props.cbb_import_shading,
         # Texture
-        import_pack_images=import_props.cbb_import_pack_images,
-        import_webp_texture=import_props.cbb_import_webp_texture,
-        import_unused_materials=import_props.cbb_import_unused_materials,
+        "import_pack_images": import_props.cbb_import_pack_images,
+        "import_webp_texture": import_props.cbb_import_webp_texture,
         # Bones & Skin
-        bone_heuristic=import_props.cbb_bone_heuristic,
-        guess_original_bind_pose=import_props.cbb_guess_original_bind_pose,
-        disable_bone_shape=import_props.cbb_disable_bone_shape,
-        bone_shape_scale_factor=import_props.cbb_bone_shape_scale_factor,
+        "bone_heuristic": import_props.cbb_bone_heuristic,
+        "guess_original_bind_pose": import_props.cbb_guess_original_bind_pose,
+        "disable_bone_shape": import_props.cbb_disable_bone_shape,
+        "bone_shape_scale_factor": import_props.cbb_bone_shape_scale_factor,
         # Pipeline
-        import_scene_as_collection=import_props.cbb_import_scene_as_collection,
-        import_select_created_objects=import_props.cbb_import_select_created_objects,
-        import_scene_extras=import_props.cbb_import_scene_extras,
+        "import_select_created_objects": import_props.cbb_import_select_created_objects,
+        "import_scene_extras": import_props.cbb_import_scene_extras,
+    }
+
+    glb_operator = bpy.ops.import_scene.gltf
+
+    # Optional properties that may not exist in older Blender versions.
+    optional_properties = {
+        "import_merge_material_slots": import_props.cbb_import_merge_material_slots,
+        "import_unused_materials": import_props.cbb_import_unused_materials,
+        "import_scene_as_collection": import_props.cbb_import_scene_as_collection,
+    }
+
+    for property_name, value in optional_properties.items():
+        if operator_has_property(glb_operator, property_name):
+            glb_props[property_name] = value
+
+    glb_operator(
+        filepath=file_path,
+        **glb_props,
     )
 
     return bpy.context.selected_objects
@@ -176,7 +203,6 @@ def export_glb(file_path: str) -> None:
         export_shared_accessors=export_props.cbb_shared_accessors,
         # Data - Vertex Colors
         export_vertex_color=export_props.cbb_vertex_color,
-        export_vertex_color_name=export_props.cbb_vertex_color_name,
         export_all_vertex_colors=export_props.cbb_all_vertex_colors,
         export_active_vertex_color_when_no_material=(
             export_props.cbb_active_vertex_color_when_no_material
@@ -221,9 +247,6 @@ def export_glb(file_path: str) -> None:
         ),
         export_draco_color_quantization=(export_props.cbb_draco_color_quantization),
         export_draco_generic_quantization=(export_props.cbb_draco_generic_quantization),
-        # Compression - Meshopt
-        export_meshopt_compression_enable=(export_props.cbb_meshopt_compression_enable),
-        export_meshopt_extension=export_props.cbb_meshopt_extension,
         # Animation
         export_animations=export_props.cbb_animations,
         export_animation_mode=export_props.cbb_animation_mode,
