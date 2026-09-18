@@ -1155,11 +1155,6 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
                 "Export active vertex color.",
             ),
             (
-                "NAME",
-                "Name",
-                "Export vertex color with this name.",
-            ),
-            (
                 "NONE",
                 "None",
                 "Do not export vertex color.",
@@ -1167,12 +1162,6 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
         ),
         description="How to export vertex color",
         default="MATERIAL",
-    )
-
-    cbb_vertex_color_name: bpy.props.StringProperty(
-        name="Name",
-        description="Name of the vertex color attribute to export",
-        default="Color",
     )
 
     cbb_all_vertex_colors: bpy.props.BoolProperty(

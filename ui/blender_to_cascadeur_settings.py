@@ -317,8 +317,6 @@ def _draw_glb_export_mesh_panel(layout, settings):
         if sub_body:
             sub_body.prop(settings, "cbb_vertex_color")
 
-            if settings.cbb_vertex_color == "NAME":
-                layout.prop(settings, "cbb_vertex_color_name")
             row = sub_body.row()
             row.active = settings.cbb_vertex_color != "NONE"
             row.prop(settings, "cbb_all_vertex_colors")
