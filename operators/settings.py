@@ -8,11 +8,15 @@ TRANSFER_PROPERTY_GROUPS = {
         "cascadeur_to_blender",
         "cascadeur_fbx_export",
         "blender_fbx_import",
+        "cascadeur_glb_export",
+        "blender_glb_import",
     ],
     "BLENDER_TO_CASCADEUR": [
         "blender_to_cascadeur",
         "blender_fbx_export",
         "cascadeur_fbx_import",
+        "blender_glb_export",
+        "cascadeur_glb_import",
     ],
 }
 
