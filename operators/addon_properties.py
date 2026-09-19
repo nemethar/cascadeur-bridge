@@ -439,7 +439,7 @@ class CBB_PG_blender_fbx_import_settings(bpy.types.PropertyGroup):
             ),
         ),
         description="Import vertex color attributes",
-        default="REFERENCE_EXISTING",
+        default="MAKE_UNIQUE",
     )
 
     #############
