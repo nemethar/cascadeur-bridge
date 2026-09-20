@@ -1,15 +1,17 @@
-🟠 Blender 4.4+
-🔷 Cascadeur 2024.3+
-🪟 Windows
-🐧 Linux
-⚖ GPL-3.0
+### Current release requirements
+
+![Blender](https://img.shields.io/badge/Blender_4.4%2B-required-blue.svg)
+![Cascadeur](https://img.shields.io/badge/Cascadeur_2026.2%2B-required-blue.svg)
+
+![Windows](https://img.shields.io/badge/Windows_11-tested-green.svg)
+![Ubuntu](https://img.shields.io/badge/Ubuntu_22.04.1-tested-green.svg)
 
 # Cascadeur Bridge for Blender
 
 Cascadeur Bridge is a Blender add-on that enables faster and more convenient transfer of models, scenes, and animations between Blender and Cascadeur.
 For a visual introduction watch the youtube video:
 
-[![Watch the video](https://img.youtube.com/vi/3J5R1G-g8Ig/default.jpg)](https://youtu.be/3J5R1G-g8Ig)
+[![Watch the video](https://img.youtube.com/vi/f_PMRSeeldk/default.jpg)](https://youtu.be/f_PMRSeeldk)
 
 ### Table of Content:
 - [Features](#features)
@@ -26,8 +28,10 @@ For a visual introduction watch the youtube video:
 - Import from Cascadeur to Blender (Model, Scene, Animation)
 - Import animation to selected armature
 - Batch import all opened scenes and actions from Cascadeur
-- Configure Cascadeur FBX export settings
-- Configure Blender FBX import/export settings
+- Configure Cascadeur FBX/GLB export settings
+- Configure Blender FBX/GLB import/export settings
+- Support Auto-Rig Pro rig export
+- Remote asset library for Cascadeur sample scenes
 
 ## Installation
 
@@ -36,7 +40,8 @@ All releases are available on the **[GitHub Releases](https://github.com/nemetha
 
 | Bridge Version | Blender | Cascadeur |
 |----------------|---------|-----------|
-| **[1.1.1 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1)** | **4.4+** | **2024.3+** |
+| **[1.2.0 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.2.0)** | **4.4+** | **2026.2+** |
+| [1.1.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1) | 4.4+ | 2024.3+ |
 | [1.1.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.0) | 3.5 – 4.3 | 2024.3+ |
 | [1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2) | 3.5 – 4.3 | 2023.2 - 2024.2 |
 | [1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0) | 3.5 – 4.3 | 2022.3.1 – 2023.1 |
@@ -52,6 +57,7 @@ All releases are available on the **[GitHub Releases](https://github.com/nemetha
 4. Look for the **Cascadeur Bridge** add-on
 5. Set the Cascadeur executable path.
 6. Click **Install Requirements**.
+7. If automatic installation fails follow the manual installation guide right below the button **Install Requirements** button.
 
 
 <details>
@@ -77,7 +83,7 @@ The add-on is available in the **CSC Bridge** tab of Blender's **3D Viewport N-p
 
 #### Export to Cascadeur
 
-Exports the current Blender scene to Cascadeur.
+Exports the current Blender scene/model/animation to Cascadeur.
 
 ### Import
 
@@ -99,19 +105,18 @@ Imports scenes or animations from **all currently opened Cascadeur scenes**.
 
 ### Settings
 
-The default FBX settings are optimized for most workflows, but can be customized if needed.
+The default FBX and GLB settings are optimized for most workflows, but can be customized if needed.
 
-- **Cascadeur Export Settings** control how Cascadeur exports FBX files.
-- **Blender Import/Export Settings** control Blender's FBX importer and exporter.
-
-Once you've found settings that work for your workflow, click **Save Settings** to make them persistent.
+Once you've found settings that work for your workflow, click **Save Settings** to make them persistent. If you want to set back the default values use the **Reset Settings** button.
 
 ### Add-on Preferences
 
 The add-on preferences allow you to:
 
 - Set the Cascadeur executable path.
+- Install the Cascadeur side of the add-on.
 - Change the name of the **Cascadeur** tab in the N-panel. This is useful if you want to group the Bridge UI with another add-on.
+- Set up the remote asset library for Cascadeur Sample Scenes.
 
 
 ## Remove the addon
