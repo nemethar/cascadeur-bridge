@@ -19,10 +19,20 @@ def get_default_csc_exe_path() -> str:
         "Darwin": r"/Applications/Cascadeur.app",
     }
     default = csc_path.get(platform.system(), "")
-    return default if file_handling.file_exists(default) else ""
+    return default if file_handling.path_exists(default) else ""
 
 
 class CascadeurHandler:
+    CASCADEUR_BRIDGE_FILES = (
+        "__init__.py",
+        "client_socket.py",
+        "commons.py",
+        "settings.cfg",
+        "temp_batch_exporter.py",
+        "temp_exporter.py",
+        "temp_importer.py",
+    )
+
     @property
     def csc_exe_path_addon_preference(self) -> str:
         """
@@ -47,6 +57,8 @@ class CascadeurHandler:
                 if platform.system() == "Darwin"
                 else os.path.dirname(self.csc_exe_path_addon_preference)
             )
+        else:
+            return None
 
     @property
     def is_csc_exe_path_valid(self) -> bool:
@@ -56,7 +68,24 @@ class CascadeurHandler:
         :return bool: True if file exists, False otherwise.
         """
         csc_path = self.csc_exe_path_addon_preference
-        return True if csc_path and file_handling.file_exists(csc_path) else False
+        return True if csc_path and file_handling.path_exists(csc_path) else False
+
+    @property
+    def is_csc_bridge_installed(self) -> bool:
+        """
+        Check if the Cascadeur side of the Blender Bridge is installed.
+
+        :return: True if all required Bridge files are present.
+        """
+        if not self.is_csc_exe_path_valid:
+            return False
+
+        bridge_dir = os.path.join(self.commands_path, "blender_bridge")
+
+        return os.path.isdir(bridge_dir) and all(
+            file_handling.path_exists(os.path.join(bridge_dir, filename))
+            for filename in self.CASCADEUR_BRIDGE_FILES
+        )
 
     @property
     def commands_path(self) -> str:
@@ -65,12 +94,15 @@ class CascadeurHandler:
 
         :return str: Directory path as a string.
         """
+        if not self.csc_dir:
+            return None
+
         resources_dir = (
             os.path.join(self.csc_dir, "Contents", "MacOS", "resources")
             if platform.system() == "Darwin"
             else os.path.join(self.csc_dir, "resources")
         )
-        return os.path.join(resources_dir, "scripts", "python", "commands")
+        return os.path.join(resources_dir, "scripts", "python", "scripts")
 
     def start_cascadeur(self) -> None:
         """

@@ -60,12 +60,13 @@ def set_action_and_slot_for_armature(
 
 def merge_armature_actions(
     armatures: list[bpy.types.Armature], new_name: str | None = None
-) -> None:
+) -> bpy.types.Action:
     """
     Merge the actions of armatures into a single action and set the name if provided.
 
     :param list armatures: List of target armature objects.
     :param str new_name: Desired name of the new action.
+    :return bpy.types.Action: The merged action object
     """
     bpy.ops.object.select_all(action="DESELECT")
 
@@ -74,8 +75,12 @@ def merge_armature_actions(
 
     bpy.context.view_layer.objects.active = armatures[0]
     bpy.ops.anim.merge_animation()
+
+    action = armatures[0].animation_data.action
     if new_name:
-        armatures[0].animation_data.action.name = new_name
+        action.name = new_name
+
+    return action
 
 
 def apply_action(
@@ -104,6 +109,8 @@ def apply_action(
 
         # Apply action and action slot to the original armature
         set_action_and_slot_for_armature(armatures[0], action_data)
+
+        action_data.action.use_fake_user = True
     else:
         for action_data in imported_action_data:
             # Find the original armature for the imported one
@@ -118,4 +125,5 @@ def apply_action(
             set_action_and_slot_for_armature(matching_armature, action_data)
 
         # Merge imported animations into one action
-        merge_armature_actions(armatures, action_name)
+        merged_action = merge_armature_actions(armatures, action_name)
+        merged_action.use_fake_user = True

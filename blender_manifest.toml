@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "cascadeur_bridge"
-version = "1.1.1"
+version = "1.2.0"
 name = "Cascadeur Bridge"
 tagline = "Helps you to integrate Cascadeur to your workflow with Belnder"
 maintainer = "Aron Nemeth <aron.nemeth95@gmail.com>"
@@ -27,12 +27,14 @@ license = [
 
 
 # # Optional: list of supported platforms. If omitted, the extension will be available in all operating systems.
-platforms = ["windows-x64", "linux-x64"]
+# platforms = ["windows-x64", "macos-arm64", "linux-x64"]
+# # Other supported platforms: "windows-arm64", "macos-x64"
 
 
 [permissions]
-network = "Communicate with Cascadeur through a localhost socket"
-files = "Import/export FBX from/to disk"
+network = "Communicate with Cascadeur using TCP, open add-on related sites"
+files = "Import and export FBX/GLB files from and to disk"
+clipboard = "Copy URLs and Cascadeur promo codes to the clipboard"
 
 # # Optional: advanced build settings.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build

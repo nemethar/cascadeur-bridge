@@ -1,16 +1,19 @@
 if "bpy" not in locals():
     from . import operators
     from . import ui
+    from . import icons
 else:
     import importlib
 
     importlib.reload(operators)
     importlib.reload(ui)
+    importlib.reload(icons)
 
 import bpy
+import os
 
-from .utils import config_handling
-from .utils.csc_handling import get_default_csc_exe_path
+from .utils import config_handling, file_handling
+from .utils.csc_handling import get_default_csc_exe_path, CascadeurHandler
 from .addon_info import DEFAULT_ASSET_LIB_NAME
 
 
@@ -50,51 +53,129 @@ class CBB_preferences(bpy.types.AddonPreferences):
     )
 
     csc_asset_lib_name: bpy.props.StringProperty(
-            name="Asset library name",
-            description="Name of the asset library with the Cascadeur Sample Scenes",
-            default=DEFAULT_ASSET_LIB_NAME,
-        )
+        name="Asset library name",
+        description="Name of the asset library with the Cascadeur Sample Scenes",
+        default=DEFAULT_ASSET_LIB_NAME,
+    )
+
+    manual_install_open: bpy.props.BoolProperty(
+        default=False,
+    )
 
     def draw(self, context):
+        _ch = CascadeurHandler()
         layout = self.layout
         col = layout.column(align=False)
-        col.prop(self, "csc_tab_name")
+        box = col.box()
+        box.prop(self, "csc_tab_name")
 
         col.separator(type="SPACE", factor=1.5)
 
         box = col.box()
-        box.label(icon="MODIFIER", text="Installation")
-        box.prop(self, "csc_exe_path")
+
         row = box.row()
-        row.alert = True
+        row.label(icon="MODIFIER", text="Cascadeur Setup")
+
+        row = box.row()
+        row.alert = not _ch.is_csc_exe_path_valid
+        row.prop(self, "csc_exe_path")
+
+        row = box.row()
+        box.separator(type="LINE")
+
+        row = box.row()
+        row.label(text="Cascadeur Scripts")
+        row = box.row()
+        if _ch.is_csc_bridge_installed:
+            row.label(icon="CHECKMARK", text="Cascadeur scripts are already installed.")
+        else:
+            row.label(
+                icon="INFO",
+                text="The Bridge requires additional scripts to be copied to your Cascadeur install folder.",
+            )
+
+        row = box.row()
+        row.alert = not _ch.is_csc_bridge_installed
         row.operator(
             "cbb.install_required_files",
-            text="Install Requirements",
+            text="Install Automatically",
             icon="MODIFIER",
         )
+        row = box.row()
+        row.label(
+            text="or",
+        )
+
+        # Manual installation guide
+        header, panel = box.panel_prop(
+            self,
+            "manual_install_open",
+        )
+
+        header.label(text="Install Manually:")
+
+        if panel:
+            source_path = os.path.join(addon_info.ADDON_PATH, "csc_files")
+            target_path = _ch.commands_path
+
+            row = panel.row()
+            row.label(
+                text="1. Copy the entire blender_bridge folder from the add-on's directory:"
+            )
+            row = panel.row()
+            row.operator("wm.path_open", text="", icon="FILE_FOLDER").filepath = (
+                source_path
+            )
+
+            row = panel.row()
+            row.label(
+                text="2. Paste the blender_bridge folder to the Cascadeur scripts folder:"
+            )
+            row = panel.row()
+
+            if not _ch.is_csc_exe_path_valid:
+                row.alert = True
+                row.label(text="Please enter a valid Cascadeur executable path first!")
+            elif not file_handling.path_exists(target_path):
+                row.alert = True
+                row.label(
+                    text="Cascadeur scripts folder not found. "
+                    "Make sure Cascadeur 2026.2 or newer is installed."
+                )
+            else:
+                row.operator("wm.path_open", text="", icon="FILE_FOLDER").filepath = (
+                    target_path
+                )
+
+            panel.label(text="3. Restart Cascadeur")
 
         col.separator(type="SPACE", factor=1.5)
 
-        box = col.box()
-        box.label(icon="ASSET_MANAGER", text="Asset Library")
-        row = box.row()
-        row.prop(self, "csc_asset_lib_name", text="Name")
-        row.operator(
-            "cbb.add_cascadeur_asset_library",
-            text="Add Cascadeur Asset Library",
-        )
+        if bpy.app.version >= (5, 2, 0):
+            # Remote asset library settings (only available from Blender 5.2.0)
+            box = col.box()
+            box.label(icon="ASSET_MANAGER", text="Asset Library")
+            row = box.row()
+            row.prop(self, "csc_asset_lib_name", text="Name")
+            row.operator(
+                "cbb.add_cascadeur_asset_library",
+                text="Add Cascadeur Asset Library",
+            )
 
 
 classes = [CBB_preferences] + operators.classes + ui.classes
 
 
 def register():
+    icons.register()
     operators.addon_properties.register_props()
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.app.timers.register(config_handling.load_settings)
 
 
 def unregister():
+    icons.unregister()
     operators.addon_properties.unregister_props()
     for cls in classes:
         bpy.utils.unregister_class(cls)

@@ -5,13 +5,15 @@ import shutil
 from typing import List
 
 
-def file_exists(file_path: str) -> bool:
+def path_exists(file_path: str) -> bool:
     """
     Checking if file exists.
 
     :param str file_path: Path of the file.
     :return bool: True if the file exsits otherwise False
     """
+    if file_path is None:
+        return False
     return os.path.exists(file_path)
 
 
@@ -21,14 +23,14 @@ def delete_file(file_path: str) -> None:
 
     :param str file_path: Path of the file
     """
-    if file_exists(file_path):
+    if path_exists(file_path):
         os.remove(file_path)
         print(f"{file_path} has been deleted.")
     else:
         print(f"{file_path} does not exist.")
 
 
-def get_export_path() -> str:
+def get_export_path(file_format: str) -> str:
     """
     Export path of the fbx file in the tempfile directory.
     Filename is based on current time.
@@ -37,7 +39,7 @@ def get_export_path() -> str:
     """
     temp_dir = tempfile.gettempdir()
     current_time = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    return os.path.join(temp_dir, f"temp_export_{current_time}.fbx")
+    return os.path.join(temp_dir, f"temp_export_{current_time}.{file_format}")
 
 
 def copy_files(
@@ -62,7 +64,7 @@ def copy_files(
     for file_name in file_list:
         source_path = os.path.join(source_folder, file_name)
         target_path = os.path.join(target_folder, file_name)
-        if not overwrite and file_exists(target_path):
+        if not overwrite and path_exists(target_path):
             continue
         try:
             shutil.copy2(source_path, target_path)

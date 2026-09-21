@@ -7,7 +7,7 @@ from . import config_handling
 
 class ServerSocket:
     _header = 64
-    _host = "localhost"
+    _host = "127.0.0.1"
     _port = config_handling.get_config_parameter(
         "Addon Settings", "port", fallback=53145, data_type=int
     )
