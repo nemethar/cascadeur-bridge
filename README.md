@@ -11,7 +11,7 @@
 Cascadeur Bridge is a Blender add-on that enables faster and more convenient transfer of models, scenes, and animations between Blender and Cascadeur.
 For a visual introduction watch the youtube video:
 
-[![Watch the video](https://img.youtube.com/vi/f_PMRSeeldk/default.jpg)](https://youtu.be/f_PMRSeeldk)
+[![Watch the video](https://img.youtube.com/vi/rVOuQjd2H9I/default.jpg)](https://youtu.be/rVOuQjd2H9I)
 
 ### Table of Content:
 - [Features](#features)
