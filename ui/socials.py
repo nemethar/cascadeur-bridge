@@ -24,7 +24,7 @@ class CBB_PT_csc_bridge_info(PanelBasics, bpy.types.Panel):
             text="YouTube",
             icon_value=icons.get_icon_id("youtube"),
         )
-        op.url = "https://youtu.be/0muo9EPIPSE"
+        op.url = "https://youtu.be/rVOuQjd2H9I"
         op.link_name = "YouTube"
         op.tooltip = "Tutorial video about this add-on"
 
