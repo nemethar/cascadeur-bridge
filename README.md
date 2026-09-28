@@ -38,14 +38,14 @@ For a visual introduction watch the youtube video:
 ### Compatibility
 All releases are available on the **[GitHub Releases](https://github.com/nemethar/cascadeur-bridge/releases)** page.
 
-| Bridge Version | Blender | Cascadeur |
-|----------------|---------|-----------|
-| **[1.2.0 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.2.0)** | **4.4+** | **2026.2+** |
-| [1.1.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1) | 4.4+ | 2024.3+ |
-| [1.1.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.0) | 3.5 – 4.3 | 2024.3+ |
-| [1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2) | 3.5 – 4.3 | 2023.2 - 2024.2 |
-| [1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0) | 3.5 – 4.3 | 2022.3.1 – 2023.1 |
-| [0.4.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/0.4.1) | 3.5 – 4.3 | ≤2022.3.1 |
+| Bridge Version | Blender | Cascadeur | Video |
+|----------------|---------|-----------|-------|
+| **[1.2.0 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.2.0)** | **4.4+** | **2026.2+** | https://youtu.be/rVOuQjd2H9I |
+| [1.1.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1) | 4.4+ | 2024.3+ | - |
+| [1.1.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.0) | 3.5 – 4.3 | 2024.3+ | https://youtu.be/j12o0F8dtJk |
+| [1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2) | 3.5 – 4.3 | 2023.2 - 2024.2 | - |
+| [1.0.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.0) | 3.5 – 4.3 | 2022.3.1 – 2023.1 | https://youtu.be/3J5R1G-g8Ig |
+| [0.4.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/0.4.1) | 3.5 – 4.3 | ≤2022.3.1 | https://youtu.be/0muo9EPIPSE |
 
 ### Installation Steps
 
