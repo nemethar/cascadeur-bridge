@@ -211,8 +211,6 @@ def export_glb(file_path: str) -> None:
         export_materials=export_props.cbb_materials,
         export_image_format=export_props.cbb_image_format,
         export_image_quality=export_props.cbb_image_quality,
-        export_image_add_webp=export_props.cbb_image_add_webp,
-        export_image_webp_fallback=export_props.cbb_image_webp_fallback,
         export_unused_images=export_props.cbb_unused_images,
         export_unused_textures=export_props.cbb_unused_textures,
         # Data - Shape Keys
