@@ -357,7 +357,6 @@ def _draw_glb_export_material_panel(layout, settings):
                 "VIEWPORT",
             }
         )
-        col.prop(settings, "cbb_image_add_webp")
 
         col = body.column()
         col.active = (
@@ -369,7 +368,6 @@ def _draw_glb_export_material_panel(layout, settings):
                 "VIEWPORT",
             }
         )
-        col.prop(settings, "cbb_image_webp_fallback")
 
         # Unused Textures & Images
         header, sub_body = body.panel(

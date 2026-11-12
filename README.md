@@ -40,7 +40,7 @@ All releases are available on the **[GitHub Releases](https://github.com/nemetha
 
 | Bridge Version | Blender | Cascadeur | Video |
 |----------------|---------|-----------|-------|
-| **[1.2.0 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.2.0)** | **4.4+** | **2026.2+** | https://youtu.be/rVOuQjd2H9I |
+| **[1.2.1 (latest)](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.2.1)** | **4.4+** | **2026.2+** | https://youtu.be/rVOuQjd2H9I |
 | [1.1.1](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.1) | 4.4+ | 2024.3+ | - |
 | [1.1.0](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.1.0) | 3.5 – 4.3 | 2024.3+ | https://youtu.be/j12o0F8dtJk |
 | [1.0.2](https://github.com/nemethar/cascadeur-bridge/releases/tag/1.0.2) | 3.5 – 4.3 | 2023.2 - 2024.2 | - |

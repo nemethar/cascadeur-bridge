@@ -1249,21 +1249,6 @@ class CBB_PG_blender_glb_export_settings(bpy.types.PropertyGroup):
         max=100,
     )
 
-    cbb_image_add_webp: bpy.props.BoolProperty(
-        name="Create WebP",
-        description=(
-            "Creates WebP textures for every texture. "
-            "For already WebP textures, nothing happens"
-        ),
-        default=False,
-    )
-
-    cbb_image_webp_fallback: bpy.props.BoolProperty(
-        name="WebP Fallback",
-        description="For all WebP textures, create a PNG fallback texture",
-        default=False,
-    )
-
     cbb_unused_images: bpy.props.BoolProperty(
         name="Unused Images",
         description="Export images not assigned to any material",

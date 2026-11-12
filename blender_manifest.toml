@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "cascadeur_bridge"
-version = "1.2.0"
+version = "1.2.1"
 name = "Cascadeur Bridge"
 tagline = "Helps you to integrate Cascadeur to your workflow with Belnder"
 maintainer = "Aron Nemeth <aron.nemeth95@gmail.com>"
